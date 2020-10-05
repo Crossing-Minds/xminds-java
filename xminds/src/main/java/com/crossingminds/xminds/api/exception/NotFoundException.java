@@ -1,0 +1,14 @@
+package com.crossingminds.xminds.api.exception;
+
+public class NotFoundException extends XmindsException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6377383019700745670L;
+
+	public NotFoundException(String msg, String code, String httpStatus, int retryAfter) {
+		super(msg, code, httpStatus, retryAfter);
+	}
+
+}
