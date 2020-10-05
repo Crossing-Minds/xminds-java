@@ -12,6 +12,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.platform.commons.annotation.Testable;
 
 import com.crossingminds.xminds.api.exception.AuthenticationException;
+import com.crossingminds.xminds.api.exception.WrongDataException;
 import com.crossingminds.xminds.api.exception.XmindsException;
 import com.crossingminds.xminds.api.model.IndividualAccount;
 import com.crossingminds.xminds.api.model.Organization;
@@ -33,7 +34,8 @@ class ClientTest {
 	public void setUp() {
 		System.out.println("Setting Up Tests!!");
 		rootAccount = new RootAccount("ing.juliob@gmail.com", "MPyNg3F5EpFIMLOt");
-		individualAccount = new IndividualAccount("", "", "John", "Smith", "johnsmith@mymail.com", "P@ssw@ord", "manager", false, "", "");
+		individualAccount = new IndividualAccount("", "", "John", "Smith", "johnsmith@mymail.com", "P@ssw@ord",
+				"manager", false, "", "");
 		serviceAccount = new ServiceAccount("", "", "myapp-srv", "abc123@#$", "backend", "", "");
 		client = new Client();
 	}
@@ -49,13 +51,14 @@ class ClientTest {
 		RootAccount rootAcct = new RootAccount("ing.juliob@gmail.com", "WrongP@ssword");
 		Assertions.assertThrows(AuthenticationException.class, () -> {
 			client.loginRoot(rootAcct);
-		  });
+		});
 	}
 
 	@Test
 	@Order(2)
 	final void testLoginRoot() throws XmindsException {
-		Assertions.assertNotNull(client.loginRoot(rootAccount));
+		Token response = client.loginRoot(rootAccount);
+		Assertions.assertNotNull(response.getToken());
 	}
 
 	@Order(3)
@@ -97,9 +100,11 @@ class ClientTest {
 		// Service Accounts must have 1 element at least
 		Assertions.assertNotNull(response.getServiceAccounts());
 		// Verify if individual account created previously is returned
-		Assertions.assertTrue(response.getIndividualAccounts().stream().filter(o -> o.getEmail().equals(individualAccount.getEmail())).findFirst().isPresent());
+		Assertions.assertTrue(response.getIndividualAccounts().stream()
+				.filter(o -> o.getEmail().equals(individualAccount.getEmail())).findFirst().isPresent());
 		// Verify if service account created previously is returned
-		Assertions.assertTrue(response.getServiceAccounts().stream().filter(o -> o.getName().equals(serviceAccount.getName())).findFirst().isPresent());
+		Assertions.assertTrue(response.getServiceAccounts().stream()
+				.filter(o -> o.getName().equals(serviceAccount.getName())).findFirst().isPresent());
 	}
 
 	@Test
@@ -114,9 +119,9 @@ class ClientTest {
 
 	@Test
 	final void testLoginRefreshToken() throws XmindsException {
-		Token response = client.loginRefreshToken();
-		// Verify an existing Token
-		Assertions.assertNotNull(response.getToken());
+		Assertions.assertThrows(WrongDataException.class, () -> {
+			client.loginRefreshToken();
+		});
 	}
 
 	@Test
