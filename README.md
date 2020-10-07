@@ -45,7 +45,7 @@ To comply with the Jackson standard it is necessary to generate model classes (P
 
 #### Example of a POJO
 
-```shell
+```java
 // Database class to map Database entity
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -82,7 +82,7 @@ public class Base implements Serializable {
 
 #### Example of automatic mapping 
 
-```shell
+```java
 
 // JSON to Java object
 public T jsonToObject(String jsonContent, Class<T> clazz) {
@@ -107,7 +107,7 @@ To ensure the use of an automatic refresh token, the Decorator design pattern is
 
 #### Example of decorated method 
 
-```shell
+```java
 // The simple method implementation
 public Organization listAllAccounts() throws XmindsException {
 	try {
