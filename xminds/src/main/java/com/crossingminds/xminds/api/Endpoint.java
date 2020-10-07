@@ -1,6 +1,7 @@
 package com.crossingminds.xminds.api;
 
 import com.crossingminds.xminds.api.exception.XmindsException;
+import com.crossingminds.xminds.api.model.Database;
 import com.crossingminds.xminds.api.model.IndividualAccount;
 import com.crossingminds.xminds.api.model.Organization;
 import com.crossingminds.xminds.api.model.RootAccount;
@@ -33,4 +34,5 @@ public interface Endpoint {
 
 	void deleteCurrentAccount() throws XmindsException;
 
+	Database createDatabase(Database database) throws XmindsException;
 }
