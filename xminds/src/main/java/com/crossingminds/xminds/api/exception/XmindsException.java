@@ -6,17 +6,37 @@ public class XmindsException extends Exception {
 	 * 
 	 */
 	private static final long serialVersionUID = -3101052380589088883L;
-	private String msg;
-	private String code;
-	private String httpStatus;
-	private int retryAfter;
+	private final String msg;
+	private final String code;
+	private final String httpStatus;
+	private final int retryAfter;
 
 	public XmindsException() {
 		super();
+		this.msg="";
+		this.code="";
+		this.httpStatus="";
+		this.retryAfter=0;
+	}
+
+	public XmindsException(Throwable throwable, String message) {
+		super(message, throwable);
+		this.msg="";
+		this.code="";
+		this.httpStatus="";
+		this.retryAfter=0;
 	}
 
 	public XmindsException(String msg, String code, String httpStatus, int retryAfter) {
-		super();
+		super(msg);
+		this.msg = msg;
+		this.code = code;
+		this.httpStatus = httpStatus;
+		this.retryAfter = retryAfter;
+	}
+
+	public XmindsException(Throwable throwable, String msg, String code, String httpStatus, int retryAfter) {
+		super(msg, throwable);
 		this.msg = msg;
 		this.code = code;
 		this.httpStatus = httpStatus;
@@ -27,32 +47,16 @@ public class XmindsException extends Exception {
 		return msg;
 	}
 
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-
 	public String getCode() {
 		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
 	}
 
 	public String getHttpStatus() {
 		return httpStatus;
 	}
 
-	public void setHttpStatus(String httpStatus) {
-		this.httpStatus = httpStatus;
-	}
-
 	public int getRetryAfter() {
 		return retryAfter;
-	}
-
-	public void setRetryAfter(int retryAfter) {
-		this.retryAfter = retryAfter;
 	}
 
 }

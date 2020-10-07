@@ -11,4 +11,8 @@ public class ServerException extends XmindsException {
 		super(msg, code, httpStatus, retryAfter);
 	}
 
+	public ServerException(Throwable throwable, String msg, String code, String httpStatus, int retryAfter) {
+		super(throwable, msg, code, httpStatus, retryAfter);
+	}
+
 }
