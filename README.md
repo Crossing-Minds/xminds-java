@@ -39,7 +39,7 @@ To achieve the success of the tests it is necessary to provide data from an exis
 
 The API is built as a Java / Maven project.
 
-For JSON mapping we use the Jackson standard (Java JSON library) (see information [here] (https://github.com/FasterXML/jackson) ) which is a powerful set of data processing tools for Java (and the JVM platform) so it is well known and used.
+For JSON mapping we use the Jackson standard (Java JSON library), see information [here] (https://github.com/FasterXML/jackson), which is a powerful set of data processing tools for Java (and the JVM platform) so it is well known and used.
 
 To comply with the Jackson standard it is necessary to generate model classes (POJOs) to map each entity of the system with its attributes, but with the ability to map extra attributes through an additional attribute for this purpose.
 
