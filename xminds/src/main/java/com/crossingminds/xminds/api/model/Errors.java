@@ -3,24 +3,24 @@ package com.crossingminds.xminds.api.model;
 public enum Errors {
 
 	// Server Errors
-	ServerError("Unknown error from server", "0", "500"),
-	ServerUnavailable("The server is currently unavailable, please try again later", "1", "503"),
-	TooManyRequests("The amount of requests exceeds the limit of your subscription", "2", "429"),
+	SERVERERROR("Unknown error from server", "0", "500"),
+	SERVERUNAVAILABLE("The server is currently unavailable, please try again later", "1", "503"),
+	TOOMANYREQUESTS("The amount of requests exceeds the limit of your subscription", "2", "429"),
 
 	// Authentication Errors
-	AuthError("Cannot perform authentication: {error}", "21", "401"),
-	JwtTokenExpired("The JWT token has expired", "22", ""),
-	RefreshTokenExpired("The JWT token has expired", "28", ""),
+	AUTHERROR("Cannot perform authentication: {error}", "21", "401"),
+	JWTTOKENEXPIRED("The JWT token has expired", "22", ""),
+	REFRESHTOKENEXPIRED("The JWT token has expired", "28", ""),
 
 	// Authentication Errors
-	RequestError("", "", "400"),
-	WrongData("There is an error in the submitted data", "40", ""),
-	DuplicatedError("The {type} {key} is duplicated", "42", ""),
-	ForbiddenError("Do not have enough permissions to access this resource: {error}", "50", "403"),
+	REQUESTERROR("", "", "400"),
+	WRONGDATA("There is an error in the submitted data", "40", ""),
+	DUPLICATEDERROR("The {type} {key} is duplicated", "42", ""),
+	FORBIDDENERROR("Do not have enough permissions to access this resource: {error}", "50", "403"),
 
 	// Resource Errors
-	NotFoundError("The {type} {key} does not exist", "60", "404"),
-	MethodNotAllowed("Method \"{method}\" not allowed", "70", "405");
+	NOTFOUNDERROR("The {type} {key} does not exist", "60", "404"),
+	METHODNOTALLOWED("Method \"{method}\" not allowed", "70", "405");
 
 	private String msg;
 	private String code;
