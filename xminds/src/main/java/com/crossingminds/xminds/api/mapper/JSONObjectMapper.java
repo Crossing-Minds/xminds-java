@@ -38,7 +38,7 @@ public class JSONObjectMapper<T> extends com.fasterxml.jackson.databind.ObjectMa
 	 */
 	public T jsonToObject(String jsonContent, Class<T> clazz) {
 		try {
-			return (T) this.readValue(jsonContent, clazz);
+			return this.readValue(jsonContent, clazz);
 		} catch (IOException ioe) {
 			throw new CompletionException(ioe);
 		}
@@ -51,7 +51,7 @@ public class JSONObjectMapper<T> extends com.fasterxml.jackson.databind.ObjectMa
 	 * @param typeReference
 	 * @return a mapped Java List object
 	 */
-	public List<T> jsonToObjectList(String jsonContent, TypeReference typeReference) {
+	public List<T> jsonToObjectList(String jsonContent, TypeReference<T> typeReference) {
 		try {
 			return (List<T>) this.readValue(jsonContent, typeReference);
 		} catch (IOException ioe) {
