@@ -28,7 +28,8 @@ public class ServiceAccount extends Base implements Serializable {
 	private String dbId;
 	@JsonProperty("frontend_user_id")
 	private String frontendUserId;
-	private final static long serialVersionUID = 205003207955071228L;
+
+	private static final long serialVersionUID = 205003207955071228L;
 
 	/**
 	 * No args constructor for use in serialization
@@ -148,7 +149,7 @@ public class ServiceAccount extends Base implements Serializable {
 		if (other == this) {
 			return true;
 		}
-		if ((other instanceof ServiceAccount) == false) {
+		if (!(other instanceof ServiceAccount)) {
 			return false;
 		}
 		ServiceAccount rhs = ((ServiceAccount) other);

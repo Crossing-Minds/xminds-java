@@ -25,7 +25,7 @@ public class Organization extends Base implements Serializable {
 	private List<IndividualAccount> individualAccounts = null;
 	@JsonProperty("service_accounts")
 	private List<ServiceAccount> serviceAccounts = null;
-	private final static long serialVersionUID = -1753280244684603549L;
+	private static final long serialVersionUID = -1753280244684603549L;
 
 	/**
 	 * No args constructor for use in serialization
@@ -120,7 +120,7 @@ public class Organization extends Base implements Serializable {
 		if (other == this) {
 			return true;
 		}
-		if ((other instanceof Organization) == false) {
+		if (!(other instanceof Organization)) {
 			return false;
 		}
 		Organization rhs = ((Organization) other);

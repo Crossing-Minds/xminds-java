@@ -35,7 +35,7 @@ public class IndividualAccount extends Base implements Serializable {
 	private String dbId;
 	@JsonProperty("frontend_user_id")
 	private String frontendUserId;
-	private final static long serialVersionUID = 5967437521568118480L;
+	private static final long serialVersionUID = 5967437521568118480L;
 
 	/**
 	 * No args constructor for use in serialization
@@ -193,7 +193,7 @@ public class IndividualAccount extends Base implements Serializable {
 		if (other == this) {
 			return true;
 		}
-		if ((other instanceof IndividualAccount) == false) {
+		if (!(other instanceof IndividualAccount)) {
 			return false;
 		}
 		IndividualAccount rhs = ((IndividualAccount) other);

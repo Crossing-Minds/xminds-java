@@ -18,7 +18,8 @@ public class RootAccount extends Base implements Serializable {
 	private String email;
 	@JsonProperty("password")
 	private String password;
-	private final static long serialVersionUID = -6170164486974115234L;
+
+	private static final long serialVersionUID = -6170164486974115234L;
 
 	/**
 	 * No args constructor for use in serialization
@@ -74,7 +75,7 @@ public class RootAccount extends Base implements Serializable {
 		if (other == this) {
 			return true;
 		}
-		if ((other instanceof RootAccount) == false) {
+		if (!(other instanceof RootAccount)) {
 			return false;
 		}
 		RootAccount rhs = ((RootAccount) other);

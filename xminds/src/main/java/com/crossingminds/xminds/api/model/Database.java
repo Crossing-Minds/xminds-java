@@ -26,7 +26,7 @@ public class Database extends Base implements Serializable {
 	private String itemIdType;
 	@JsonProperty("user_id_type")
 	private String userIdType;
-	private final static long serialVersionUID = 1261106258660845138L;
+	private static final long serialVersionUID = 1261106258660845138L;
 
 	/**
 	 * No args constructor for use in serialization
@@ -133,7 +133,7 @@ public class Database extends Base implements Serializable {
 		if (other == this) {
 			return true;
 		}
-		if ((other instanceof Database) == false) {
+		if (!(other instanceof Database)) {
 			return false;
 		}
 		Database rhs = ((Database) other);

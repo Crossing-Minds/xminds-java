@@ -11,16 +11,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({ "token", "refresh_token", "database" })
+@JsonPropertyOrder({ "jwtToken", "refresh_token", "database" })
 public class Token extends Base implements Serializable {
 
 	@JsonProperty("token")
-	private String token;
+	private String jwtToken;
 	@JsonProperty("refresh_token")
 	private String refreshToken;
 	@JsonProperty("database")
 	private Database database;
-	private final static long serialVersionUID = -1861609617818872540L;
+
+	private static final long serialVersionUID = -1861609617818872540L;
 
 	/**
 	 * No args constructor for use in serialization
@@ -37,19 +38,19 @@ public class Token extends Base implements Serializable {
 	 */
 	public Token(String token, String refreshToken, Database database) {
 		super();
-		this.token = token;
+		this.jwtToken = token;
 		this.refreshToken = refreshToken;
 		this.database = database;
 	}
 
-	@JsonProperty("token")
+	@JsonProperty("jwtToken")
 	public String getToken() {
-		return token;
+		return jwtToken;
 	}
 
-	@JsonProperty("token")
+	@JsonProperty("jwtToken")
 	public void setToken(String token) {
-		this.token = token;
+		this.jwtToken = token;
 	}
 
 	@JsonProperty("refresh_token")
@@ -74,13 +75,13 @@ public class Token extends Base implements Serializable {
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this).append("token", token).append("refreshToken", refreshToken)
+		return new ToStringBuilder(this).append("jwtToken", jwtToken).append("refreshToken", refreshToken)
 				.append("database", database).append("additionalProperties", additionalProperties).toString();
 	}
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder().append(database).append(additionalProperties).append(token).append(refreshToken)
+		return new HashCodeBuilder().append(database).append(additionalProperties).append(jwtToken).append(refreshToken)
 				.toHashCode();
 	}
 
@@ -89,12 +90,12 @@ public class Token extends Base implements Serializable {
 		if (other == this) {
 			return true;
 		}
-		if ((other instanceof Token) == false) {
+		if (!(other instanceof Token)) {
 			return false;
 		}
 		Token rhs = ((Token) other);
 		return new EqualsBuilder().append(database, rhs.database).append(additionalProperties, rhs.additionalProperties)
-				.append(token, rhs.token).append(refreshToken, rhs.refreshToken).isEquals();
+				.append(jwtToken, rhs.jwtToken).append(refreshToken, rhs.refreshToken).isEquals();
 	}
 
 }
