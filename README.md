@@ -29,17 +29,17 @@ mvn clean test -DrootEmail=<ROOT_EMAIL> -DrootPass=<ROOT_PASSWORD> -DstagingHost
 
 To achieve the success of the tests it is necessary to provide data from an existing user on the platform.
 
-<ROOT_EMAIL> (e.g. user@mail.com)
+<ROOT_EMAIL> e.g. user@mail.com
 
-<ROOT_PASSWORD> (e.g.: P@ssw@rd)
+<ROOT_PASSWORD> e.g.: P@ssw@rd
 
-<STAGING_HOST> (e.g. https://staging-api.crossingminds.com/)
+<STAGING_HOST> e.g. https://staging-api.crossingminds.com/
 
 ## Desing considerations
 
 The API is built as a Java / Maven project.
 
-For JSON mapping we use the Jackson standard (Java JSON library) (see information [here] (https://github.com/FasterXML/jackson)) which is a powerful set of data processing tools for Java (and the JVM platform) so it is well known and used.
+For JSON mapping we use the Jackson standard (Java JSON library) (see information [here] (https://github.com/FasterXML/jackson) ) which is a powerful set of data processing tools for Java (and the JVM platform) so it is well known and used.
 
 To comply with the Jackson standard it is necessary to generate model classes (POJOs) to map each entity of the system with its attributes, but with the ability to map extra attributes through an additional attribute for this purpose.
 
