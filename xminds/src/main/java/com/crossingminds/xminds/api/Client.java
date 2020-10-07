@@ -4,6 +4,7 @@ import com.crossingminds.xminds.api.exception.AuthenticationException;
 import com.crossingminds.xminds.api.exception.DuplicatedException;
 import com.crossingminds.xminds.api.exception.NotFoundException;
 import com.crossingminds.xminds.api.exception.XmindsException;
+import com.crossingminds.xminds.api.model.Database;
 import com.crossingminds.xminds.api.model.IndividualAccount;
 import com.crossingminds.xminds.api.model.Organization;
 import com.crossingminds.xminds.api.model.RootAccount;
@@ -14,6 +15,9 @@ public class Client {
 
 	private EndpointDecorator endpoint;
 
+	/**
+	 * Default constructor for Production
+	 */
 	public Client() {
 		super();
 		// The class that contains implementation of endpoints
@@ -23,10 +27,22 @@ public class Client {
 	}
 
 	/**
+	 * Custom constructor for Testing
+	 * 
+	 * @param stagingHost
+	 */
+	public Client(String stagingHost) {
+		super();
+		// The class that contains implementation of endpoints
+		var endpointImpl = new EndpointImpl(stagingHost);
+		// Wrapper class
+		endpoint = new EndpointDecorator(endpointImpl);
+	}
+
+	/**
 	 * Retrieve all the accounts that belong to the organization of the token.
 	 * 
-	 * @return the Organization.individualAccounts list and the
-	 *         Organization.serviceAccounts list
+	 * @return organization (individualAccounts list and the serviceAccounts list)
 	 * @throws XmindsException
 	 */
 	public Organization listAllAccounts() throws XmindsException {
@@ -38,11 +54,8 @@ public class Client {
 	 * new account it is necessary to have generated a token previously (using
 	 * loginRoot, for instance with the root account).
 	 * 
-	 * @param individualAccount.first_name, individualAccount.last_name,
-	 *                                      individualAccount.email,
-	 *                                      individualAccount.password,
-	 *                                      individualAccount.role
-	 * @return individualAccount.id
+	 * @param individualAccount (firstName, lastName, email, password, role)
+	 * @return individualAccount (id)
 	 * @throws DuplicatedException
 	 */
 	public IndividualAccount createIndividualAccount(IndividualAccount individualAccount) throws XmindsException {
@@ -53,7 +66,7 @@ public class Client {
 	 * Delete another individual account by email address that belong to the
 	 * organization of the token.
 	 * 
-	 * @param individualAccount.email
+	 * @param individualAccount (email)
 	 * @throws NotFoundException
 	 */
 	public void deleteIndividualAccount(IndividualAccount individualAccount) throws XmindsException {
@@ -64,7 +77,7 @@ public class Client {
 	 * Login with the root account, without selecting any database. This is useful
 	 * to create new databases, or create new accounts.
 	 * 
-	 * @param rootAccount.email, rootAccount.password
+	 * @param rootAccount (email, password)
 	 * @return Token
 	 * @throws AuthenticationException
 	 */
@@ -77,8 +90,9 @@ public class Client {
 	 * and a (potentially new) refresh_token will be created.
 	 * 
 	 * @return Token
-	 * @throws NotFoundException, AuthenticationException,
-	 *                            RefreshTokenExpiredException
+	 * @throws NotFoundException
+	 * @throws AuthenticationException
+	 * @throws RefreshTokenExpiredException
 	 */
 	public Token loginRefreshToken() throws XmindsException {
 		return endpoint.loginRefreshToken();
@@ -89,8 +103,8 @@ public class Client {
 	 * account it is necessary to have generated a token previously (using
 	 * loginRoot, for instance with the root account).
 	 * 
-	 * @param serviceAccount.name, serviceAccount.password, serviceAccount.role
-	 * @return serviceAccount.id
+	 * @param serviceAccount (name, password, role)
+	 * @return serviceAccount (id)
 	 * @throws DuplicatedException
 	 */
 	public ServiceAccount createServiceAccount(ServiceAccount serviceAccount) throws XmindsException {
@@ -101,7 +115,7 @@ public class Client {
 	 * Delete another service account by name that belong to the organization of the
 	 * token.
 	 * 
-	 * @param serviceAccount.email
+	 * @param serviceAccount (email)
 	 * @throws NotFoundException
 	 */
 	public void deleteServiceAccount(ServiceAccount serviceAccount) throws XmindsException {
@@ -112,8 +126,7 @@ public class Client {
 	 * Login on a database with your account, using your email and password
 	 * combination.
 	 * 
-	 * @param individualAccount.email, individualAccount.password,
-	 *                                 individualAccount.db_id
+	 * @param individualAccount (email, password, dbId)
 	 * @return Token
 	 * @throws AuthenticationException
 	 */
@@ -125,8 +138,7 @@ public class Client {
 	 * Login on a database with a service account, using a service name and password
 	 * combination.
 	 * 
-	 * @param serviceAccount.name, serviceAccount.password, serviceAccount.db_id,
-	 *                             serviceAccount.frontend_user_id
+	 * @param serviceAccount (name, password, dbId, frontendUserId)
 	 * @return Token
 	 * @throws AuthenticationException
 	 */
@@ -139,7 +151,8 @@ public class Client {
 	 * account.
 	 * 
 	 * @param email
-	 * @throws NotFoundException, AuthenticationException
+	 * @throws NotFoundException
+	 * @throws AuthenticationException
 	 */
 	public void resendVerificationCode(String email) throws XmindsException {
 		endpoint.resendVerificationCode(email);
@@ -152,7 +165,8 @@ public class Client {
 	 * 
 	 * @param code
 	 * @param email
-	 * @throws NotFoundException, AuthenticationException
+	 * @throws NotFoundException
+	 * @throws AuthenticationException
 	 */
 	public void verifyAccount(String code, String email) throws XmindsException {
 		endpoint.verifyAccount(code, email);
@@ -165,6 +179,17 @@ public class Client {
 	 */
 	public void deleteCurrentAccount() throws XmindsException {
 		endpoint.deleteCurrentAccount();
+	}
+
+	/**
+	 * Create a new database.
+	 * 
+	 * @param database (name, description, itemIdType, userIdType)
+	 * @return database (id)
+	 * @throws XmindsException
+	 */
+	public Database createDatabase(Database database) throws XmindsException {
+		return endpoint.createDatabase(database);
 	}
 
 }
