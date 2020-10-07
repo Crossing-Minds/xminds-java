@@ -6,11 +6,14 @@
 	<artifactId>xminds</artifactId>
 	<version>0.0.1</version>
 	<name>xminds</name>
+	<url>https://github.com/Crossing-Minds/xminds-java</url>
 	<description>Java client for Crossing Minds B2B API</description>
 
 	<properties>
 		<jdk.version>11</jdk.version>
-		<jjwt.version>0.9.1</jjwt.version>
+		<maven.compiler.source>${jdk.version}</maven.compiler.source>
+        <maven.compiler.target>${jdk.version}</maven.compiler.target>
+		<jackson-databind.version>2.11.3</jackson-databind.version>
 		<commons-lang3.version>3.11</commons-lang3.version>
 		<junit-jupiter.version>5.7.0</junit-jupiter.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -35,11 +38,11 @@
 
 	<dependencies>
 
-		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt</artifactId>
-			<version>${jjwt.version}</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson-databind.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
@@ -82,6 +85,14 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven-surefire-plugin.version}</version>
+				<configuration>
+					<argLine></argLine>
+					<systemPropertyVariables>
+						<rootEmail>${rootEmail}</rootEmail>
+						<rootPass>${rootPass}</rootPass>
+						<stagingHost>${stagingHost}</stagingHost>
+					</systemPropertyVariables>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -89,15 +100,12 @@
 				<executions>
 					<execution>
 						<id>copy-dependencies</id>
-						<phase>prepare-package</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
 							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>false</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
 						</configuration>
 					</execution>
 				</executions>
