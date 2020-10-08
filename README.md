@@ -35,7 +35,7 @@ To achieve the success of the tests it is necessary to provide data from an exis
 
 <STAGING_HOST> e.g. https://staging-api.crossingminds.com/
 
-## Desing considerations
+## Design considerations
 
 The API is built as a Java / Maven project.
 
