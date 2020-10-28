@@ -36,19 +36,26 @@ public class Constants {
 	/**
 	 * Related to EndPoints
 	 */
+	// Accounts
 	public static final String ENDPOINT_LIST_ALL_ACCOUNTS = "organizations/accounts/";
 	public static final String ENDPOINT_CREATE_INDIVIDUAL_ACCOUNT = "accounts/individual/";
 	public static final String ENDPOINT_DELETE_INDIVIDUAL_ACCOUNT = "accounts/individual/";
 	public static final String ENDPOINT_CREATE_SERVICE_ACCOUNT = "accounts/service/";
 	public static final String ENDPOINT_DELETE_SERVICE_ACCOUNT = "accounts/service/";
+	public static final String ENDPOINT_RESEND_EMAIL_VERIFICATION_CODE = "accounts/resend-verification-code/";
+	public static final String ENDPOINT_VERIFY_EMAIL = "accounts/verify/?code=%s&email=%s";
+	public static final String ENDPOINT_DELETE_CURRENT_ACCOUNT = "accounts/";
+	// Login
 	public static final String ENDPOINT_LOGIN_INDIVIDUAL_ACCOUNT = "login/individual/";
 	public static final String ENDPOINT_LOGIN_SERVICE_ACCOUNT = "login/service/";
 	public static final String ENDPOINT_LOGIN_ROOT = "login/root/";
 	public static final String ENDPOINT_RENEW_LOGIN_REFRESH_TOKEN = "login/refresh-token/";
-	public static final String ENDPOINT_RESEND_EMAIL_VERIFICATION_CODE = "accounts/resend-verification-code/";
-	public static final String ENDPOINT_VERIFY_EMAIL = "accounts/verify/";
-	public static final String ENDPOINT_DELETE_CURRENT_ACCOUNT = "accounts/";
+	// Database
 	public static final String ENDPOINT_CREATE_DATABASE = "databases/";
+	public static final String ENDPOINT_LIST_ALL_DATABASES = "databases/";
+	public static final String ENDPOINT_CURRENT_DATABASE = "databases/current/";
+	public static final String ENDPOINT_DELETE_CURRENT_DATABASE = "databases/current/";
+	public static final String ENDPOINT_CURRENT_DATABASE_STATUS = "databases/current/status/";
 
 	/**
 	 * Related to literals

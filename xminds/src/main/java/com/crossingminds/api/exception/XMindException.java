@@ -1,8 +1,5 @@
 package com.crossingminds.api.exception;
 
-import com.crossingminds.api.model.BaseError;
-import com.crossingminds.api.model.ErrorData;
-
 public class XMindException extends Exception {
 
 	/**
@@ -16,18 +13,18 @@ public class XMindException extends Exception {
 
 	public XMindException() {
 		super();
-		this.msg = "";
-		this.code = "";
-		this.httpStatus = "";
-		this.retryAfter = 0;
+		this.msg="";
+		this.code="";
+		this.httpStatus="";
+		this.retryAfter=0;
 	}
 
 	public XMindException(Throwable throwable, String message) {
 		super(message, throwable);
-		this.msg = message;
-		this.code = "";
-		this.httpStatus = "";
-		this.retryAfter = 0;
+		this.msg="";
+		this.code="";
+		this.httpStatus="";
+		this.retryAfter=0;
 	}
 
 	public XMindException(String msg, String code, String httpStatus, int retryAfter) {
@@ -62,19 +59,5 @@ public class XMindException extends Exception {
 		return retryAfter;
 	}
 
-	public BaseError getBaseError() {
-		BaseError baseError = null;
-		if (this.getCause() != null) {
-			try {
-				XMindRuntimeException xre = (XMindRuntimeException) this.getCause();
-				if (xre != null) {
-					baseError = xre.getBaseError();
-				}
-			} catch (ClassCastException cce) {
-				baseError = new BaseError(500, "ServerError", this.msg, new ErrorData(), null);
-			}
-		}
-		return baseError;
-	}
-
 }
+

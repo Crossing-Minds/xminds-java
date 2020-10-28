@@ -3,13 +3,16 @@ package com.crossingminds.api;
 import com.crossingminds.api.exception.AuthenticationException;
 import com.crossingminds.api.exception.DuplicatedException;
 import com.crossingminds.api.exception.NotFoundException;
+import com.crossingminds.api.exception.RefreshTokenExpiredException;
 import com.crossingminds.api.exception.XMindException;
 import com.crossingminds.api.model.Database;
 import com.crossingminds.api.model.IndividualAccount;
-import com.crossingminds.api.model.Organization;
 import com.crossingminds.api.model.RootAccount;
 import com.crossingminds.api.model.ServiceAccount;
 import com.crossingminds.api.model.Token;
+import com.crossingminds.api.response.AccountList;
+import com.crossingminds.api.response.DatabasePage;
+import com.crossingminds.api.response.DatabaseStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface XMindClient {
@@ -17,10 +20,10 @@ public interface XMindClient {
 	/**
 	 * Retrieve all the accounts that belong to the organization of the token.
 	 * 
-	 * @return organization (individualAccounts list and the serviceAccounts list)
+	 * @return AccountList (individualAccounts list and the serviceAccounts list)
 	 * @throws XMindException
 	 */
-	Organization listAllAccounts() throws XMindException;
+	AccountList listAllAccounts() throws XMindException;
 
 	/**
 	 * Create a new account for an individual, identified by an email. To create a
@@ -115,8 +118,8 @@ public interface XMindClient {
 	void resendVerificationCode(String email) throws XMindException, JsonProcessingException;
 
 	/**
-	 * Useful to verify the email of an individual account. You can’t use an
-	 * individual account without verifying the email. If you didn’t receive our
+	 * Useful to verify the email of an individual account. You canï¿½t use an
+	 * individual account without verifying the email. If you didnï¿½t receive our
 	 * email, please use resendVerificationCode
 	 * 
 	 * @param code
@@ -127,7 +130,7 @@ public interface XMindClient {
 	void verifyAccount(String code, String email) throws XMindException;
 
 	/**
-	 * Delete the account you’re logged to with your current token.
+	 * Delete the account youï¿½re logged to with your current token.
 	 * 
 	 * @throws XMindException
 	 */
@@ -141,4 +144,42 @@ public interface XMindClient {
 	 * @throws XMindException
 	 */
 	Database createDatabase(Database database) throws XMindException;
+
+	/**
+	 * Retrieve all databases for the organization you’re logged to with your current token. 
+	 * The result is paginated.
+	 * 
+	 * @return DatabasePage
+	 * @throws XMindException
+	 */
+	DatabasePage listAllDatabases() throws XMindException;
+
+	/**
+	 * Retrieve the metadata for the database you’re logged to with your current token.
+	 * 
+	 * @return Database
+	 * @throws XMindException
+	 */
+	Database getCurrentDatabase() throws XMindException;
+
+	/**
+	 * Delete the database you’re logged to with your current token. 
+	 * Everything will be deleted: all the items, all the users, all the ratings, 
+	 * all refresh token and all the machine learning models that were created. 
+	 * Note that you cannot undo this operation.
+	 * 
+	 * @throws XMindException
+	 */
+	void deleteCurrentDatabase() throws XMindException;
+
+	/**
+	 * Retrieve status of database. Initially the database will be in “pending” status. 
+	 * Until the status switch to “ready” you will not be able to get recommendations.
+	 * 
+	 * @return DatabaseStatus (status)
+	 * @throws XMindException
+	 */
+	DatabaseStatus getCurrentDatabaseStatus() throws XMindException;
+
 }
+

@@ -12,13 +12,15 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.platform.commons.annotation.Testable;
 
 import com.crossingminds.api.XMindClientImpl.XMindFactory;
+import com.crossingminds.api.exception.AuthenticationException;
 import com.crossingminds.api.exception.XMindException;
 import com.crossingminds.api.model.Database;
 import com.crossingminds.api.model.IndividualAccount;
-import com.crossingminds.api.model.Organization;
 import com.crossingminds.api.model.RootAccount;
 import com.crossingminds.api.model.ServiceAccount;
 import com.crossingminds.api.model.Token;
+import com.crossingminds.api.response.AccountList;
+import com.crossingminds.api.response.DatabasePage;
 
 @Testable
 @TestMethodOrder(OrderAnnotation.class)
@@ -43,16 +45,12 @@ class ClientTest {
 				"testindividual@mail.com", "testP@ssw@rd1", "manager", false, "", "");
 		this.serviceAccount = new ServiceAccount("", "", "myapp-server-test3", "abc123@#$", "backend", "", "1234");
 		this.database = new Database("", "", "Example Test DB name", "Example Test DB longer description", "uuid",
-				"uint32");
+				"uint32", "", null);
 		client = XMindFactory.getClient(this.stagingHost);
 	}
 
 	@AfterAll
 	public void done() throws XMindException {
-		RootAccount rootAccount = new RootAccount(this.rootEmail, this.rootPass);
-		client.loginRoot(rootAccount);
-		client.deleteIndividualAccount(this.individualAccount);
-		client.deleteServiceAccount(this.serviceAccount);
 		System.out.println("All tests executed!!!");
 	}
 
@@ -80,6 +78,7 @@ class ClientTest {
 		Assertions.assertNotNull(response.getId());
 		this.individualAccount.setDbId(response.getId());
 		this.serviceAccount.setDbId(response.getId());
+		this.database.setId(response.getId());
 	}
 
 	@Order(3)
@@ -115,7 +114,7 @@ class ClientTest {
 	@Order(7)
 	@Test
 	final void testListAllAccounts() throws XMindException {
-		Organization response = client.listAllAccounts();
+		AccountList response = client.listAllAccounts();
 		// Individual Accounts must have 1 element at least
 		Assertions.assertNotNull(response.getIndividualAccounts());
 		// Service Accounts must have 1 element at least
@@ -176,11 +175,46 @@ class ClientTest {
 
 	@Order(14)
 	@Test
-	final void testDeleteAccountsException() throws XMindException {
-		Assertions.assertThrows(XMindException.class, () -> {
-			client.deleteIndividualAccount(this.individualAccount);
-			client.deleteServiceAccount(this.serviceAccount);
+	final void listAllDatabases() throws XMindException {
+		DatabasePage response = client.listAllDatabases();
+		// Databases must have 1 element at least
+		Assertions.assertTrue(response.getDatabases().size()>0);
+		// Verify that database created previously is returned
+		Assertions.assertTrue(response.getDatabases().stream()
+				.filter(o -> o.getId().equals(this.database.getId())).findFirst().isPresent());
+	}
+
+	@Order(15)
+	@Test
+	final void getCurrentDatabase() throws XMindException {
+		Database response = client.getCurrentDatabase();
+		// Verify that current database Id is the same that created in previous test
+		Assertions.assertEquals(response.getId(), this.database.getId());
+	}
+
+	@Order(16)
+	@Test
+	final void getCurrentDatabaseStatus() throws XMindException {
+		String response = client.getCurrentDatabaseStatus();
+		Assertions.assertTrue("ready".equalsIgnoreCase(response) || "pending".equalsIgnoreCase(response));
+	}
+
+	@Order(17)
+	@Test
+	final void deleteCurrentDatabase() throws XMindException {
+		Assertions.assertThrows(AuthenticationException.class, () -> {
+			client.loginIndividual(individualAccount);
+			client.deleteCurrentDatabase();
 		});
 	}
 
+	@Order(18)
+	@Test
+	final void testDeleteAccountsException() throws XMindException {
+		RootAccount rootAccount = new RootAccount(this.rootEmail, this.rootPass);
+		client.loginRoot(rootAccount);
+		client.deleteIndividualAccount(this.individualAccount);
+		client.deleteServiceAccount(this.serviceAccount);
+	}
 }
+
