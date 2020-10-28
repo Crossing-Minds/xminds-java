@@ -21,6 +21,7 @@ import com.crossingminds.api.model.ServiceAccount;
 import com.crossingminds.api.model.Token;
 import com.crossingminds.api.response.AccountList;
 import com.crossingminds.api.response.DatabasePage;
+import com.crossingminds.api.response.DatabaseStatus;
 
 @Testable
 @TestMethodOrder(OrderAnnotation.class)
@@ -44,8 +45,7 @@ class ClientTest {
 		this.individualAccount = new IndividualAccount("", "", "Test firstName", "Test lastName",
 				"testindividual@mail.com", "testP@ssw@rd1", "manager", false, "", "");
 		this.serviceAccount = new ServiceAccount("", "", "myapp-server-test3", "abc123@#$", "backend", "", "1234");
-		this.database = new Database("", "", "Example Test DB name", "Example Test DB longer description", "uuid",
-				"uint32", "", null);
+		this.database = new Database("", "", "Example Test DB name", "Example Test DB longer description", "uuid", "uint32", null);
 		client = XMindFactory.getClient(this.stagingHost);
 	}
 
@@ -195,8 +195,8 @@ class ClientTest {
 	@Order(16)
 	@Test
 	final void getCurrentDatabaseStatus() throws XMindException {
-		String response = client.getCurrentDatabaseStatus();
-		Assertions.assertTrue("ready".equalsIgnoreCase(response) || "pending".equalsIgnoreCase(response));
+		DatabaseStatus response = client.getCurrentDatabaseStatus();
+		Assertions.assertTrue("ready".equalsIgnoreCase(response.getStatus()) || "pending".equalsIgnoreCase(response.getStatus()));
 	}
 
 	@Order(17)
