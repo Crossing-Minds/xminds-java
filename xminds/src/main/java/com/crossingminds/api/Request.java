@@ -45,11 +45,9 @@ public class Request {
 	/*
 	 * Base constructor
 	 */
-	public Request(String stagingHost) {
+	public Request(String host) {
 		super();
-		if (!stagingHost.isBlank()) {
-			this.host = stagingHost;
-		}
+		this.host = !host.isBlank() ? host : Constants.API_URL;
 		this.mapper = new ObjectMapper();
 		this.token = new Token();
 		this.headers = new String[8];
@@ -87,7 +85,7 @@ public class Request {
 
 	public <T> T put(String endpoint, Object objRequestBody, Class<T> valueType) throws XMindException {
 		return sendHttpRequest(getHttpRequestBuilder(getURI(endpoint))
-				.PUT(BodyPublishers.ofString(this.writeValueAsString(this.writeValueAsString(objRequestBody)))).build(),
+				.PUT(BodyPublishers.ofString(this.writeValueAsString(objRequestBody))).build(),
 				valueType);
 	}
 
@@ -130,11 +128,7 @@ public class Request {
 	}
 
 	private URI getURI(String endpoint) {
-		if (!this.host.isBlank()) {
-			return URI.create(this.host + endpoint);
-		} else {
-			return URI.create(Constants.API_URL + endpoint);
-		}
+		return URI.create(this.host + endpoint);
 	}
 
 	private <T> T checkStatusCode(HttpResponse<String> response, Class<T> valueType) throws XMindException, JsonProcessingException {

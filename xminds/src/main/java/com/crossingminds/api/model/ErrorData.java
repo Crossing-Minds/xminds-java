@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -23,7 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({ "error", "type", "key", "name", "method" })
+@JsonPropertyOrder({ "error", "type", "key", "name", "method", "query" })
 public class ErrorData implements Serializable {
 
 	@JsonProperty("error")
@@ -36,8 +35,9 @@ public class ErrorData implements Serializable {
 	private String name;
 	@JsonProperty("method")
 	private String method;
+	@JsonProperty("query")
+	private QueryError query;
 	@Builder.Default
-	@JsonIgnore
 	protected transient Map<String, Object> additionalProperties = new HashMap<>();
 	private static final long serialVersionUID = -7315497296996355910L;
 

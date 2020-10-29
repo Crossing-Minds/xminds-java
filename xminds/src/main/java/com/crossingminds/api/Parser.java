@@ -34,10 +34,10 @@ public class Parser {
 		if (baseError != null) {
 			String errorName = baseError.getErrorName();
 			Errors errorDetails = Errors.valueOf(errorName.toUpperCase());
-			var error = baseError.getErrorData().getError();
-			var type = baseError.getErrorData().getType();
-			var key = baseError.getErrorData().getKey();
-			var method = baseError.getErrorData().getMethod();
+			var error = baseError.getErrorData().getError() != null ? baseError.getErrorData().getError() : "";
+			var type = baseError.getErrorData().getType() != null ? baseError.getErrorData().getType() : "";
+			var key = baseError.getErrorData().getKey() != null ? baseError.getErrorData().getKey() : "";
+			var method = baseError.getErrorData().getMethod() != null ? baseError.getErrorData().getMethod() : "";
 			switch (errorName) {
 			case "ServerUnavailable":
 				throw new ServerUnavailableException(errorDetails.getMsg(), errorDetails.getCode(),
@@ -74,8 +74,9 @@ public class Parser {
 						errorDetails.getCode(), errorDetails.getHttpStatus(), 0);
 			case "ServerError":
 			default:
-				throw new ServerException(baseError.getMessage() != null ? baseError.getMessage() : errorDetails.getMsg(), errorDetails.getCode(), errorDetails.getHttpStatus(),
-						0);
+				throw new ServerException(
+						baseError.getMessage() != null ? baseError.getMessage() : errorDetails.getMsg(),
+						errorDetails.getCode(), errorDetails.getHttpStatus(), 0);
 			}
 		} else {
 			throw new ServerException(null, Constants.UNKNOWN_ERROR_MSG, "0", "500", 0);

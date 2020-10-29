@@ -4,7 +4,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
 import com.crossingminds.api.exception.JwtTokenExpiredException;
@@ -12,12 +16,18 @@ import com.crossingminds.api.exception.XMindException;
 import com.crossingminds.api.model.Base;
 import com.crossingminds.api.model.Database;
 import com.crossingminds.api.model.IndividualAccount;
+import com.crossingminds.api.model.Property;
 import com.crossingminds.api.model.RootAccount;
 import com.crossingminds.api.model.ServiceAccount;
 import com.crossingminds.api.model.Token;
+import com.crossingminds.api.model.User;
 import com.crossingminds.api.response.AccountList;
 import com.crossingminds.api.response.DatabasePage;
 import com.crossingminds.api.response.DatabaseStatus;
+import com.crossingminds.api.response.PropertyList;
+import com.crossingminds.api.response.UserBulk;
+import com.crossingminds.api.response.UserList;
+import com.crossingminds.api.response.UserMap;
 import com.crossingminds.api.utils.Constants;
 import com.crossingminds.api.utils.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -47,10 +57,6 @@ public class XMindClientImpl implements XMindClient {
 		this.request = new Request(staging);
 	}
 
-	private String decode(String value) {
-		return StringUtils.decodeUSASCII(value);
-	}
-
 	/**
 	 * 
 	 * Factory to create XmindClient instances
@@ -69,7 +75,7 @@ public class XMindClientImpl implements XMindClient {
 					.getMatchingMethod(xmindClient.getClass(), method.getName()).getAnnotation(LoginRequired.class));
 		}
 
-		@Override
+		@LoginRequired
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			try {
 				return method.invoke(xmindClient, args);
@@ -152,13 +158,16 @@ public class XMindClientImpl implements XMindClient {
 	}
 
 	public void resendVerificationCode(String email) throws XMindException, JsonProcessingException {
-		ObjectNode params = JsonNodeFactory.instance.objectNode();
-		params.put("email", email);
-		this.request.put(Constants.ENDPOINT_RESEND_EMAIL_VERIFICATION_CODE, params, Base.class);
+		ObjectNode bodyParams = JsonNodeFactory.instance.objectNode();
+		bodyParams.put("email", email);
+		this.request.put(Constants.ENDPOINT_RESEND_EMAIL_VERIFICATION_CODE, bodyParams, Base.class);
 	}
 
 	public void verifyAccount(String code, String email) throws XMindException {
-		var uri = String.format(Constants.ENDPOINT_VERIFY_EMAIL, this.decode(code), this.decode(email));
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("code", code);
+		queryParams.put("email", email);
+		var uri = Constants.ENDPOINT_VERIFY_EMAIL + StringUtils.getEncodedQueryString(queryParams);
 		this.request.get(uri, Base.class);
 	}
 
@@ -192,5 +201,66 @@ public class XMindClientImpl implements XMindClient {
 		return this.request.get(Constants.ENDPOINT_CURRENT_DATABASE_STATUS, DatabaseStatus.class);
 	}
 
-}
+	@LoginRequired
+	public PropertyList listAllUserProperties() throws XMindException {
+		return this.request.get(Constants.ENDPOINT_LIST_ALL_USER_PROPERTIES, PropertyList.class);
+	}
 
+	@LoginRequired
+	public void createUserProperty(Property userProperty) throws XMindException {
+		this.request.post(Constants.ENDPOINT_CREATE_USER_PROPERTY, userProperty, Base.class);
+	}
+
+	@LoginRequired
+	public Property getUserProperty(String propertyName) throws XMindException {
+		var uri = String.format(Constants.ENDPOINT_GET_USER_PROPERTY, propertyName);
+		return this.request.get(uri, Property.class);
+	}
+
+	@LoginRequired
+	public void deleteUserProperty(String propertyName) throws XMindException {
+		var uri = String.format(Constants.ENDPOINT_DELETE_USER_PROPERTY, propertyName);
+		this.request.delete(uri, Base.class);
+	}
+
+	@LoginRequired
+	public User getUser(Object userId) throws XMindException {
+		var uri = String.format(Constants.ENDPOINT_GET_USER, userId);
+		return this.request.get(uri, UserMap.class).getUser();
+	}
+
+	@LoginRequired
+	public void createOrUpdateUser(User user) throws XMindException {
+		var uri = String.format(Constants.ENDPOINT_CREATE_UPDATE_USER, user.getUserId());
+		Map<String, Object> bodyParams = new HashMap<>();
+		user.remove("user_id");
+		bodyParams.put("user", user);
+		this.request.put(uri, bodyParams, Base.class);
+	}
+
+	@LoginRequired
+	public void createOrUpdateUsersBulk(List<User> users, Integer chunkSize) throws XMindException {
+		if(chunkSize == null)
+			chunkSize = 1000; // default value
+		for (List<User> usersChunk : ListUtils.partition(users, chunkSize))
+			this.request.put(Constants.ENDPOINT_CREATE_UPDATE_USERS_BULK, Map.of("users", usersChunk), Base.class);                
+	}
+
+	@LoginRequired
+	public UserBulk listUsersPaginated(int amt, String cursor) throws XMindException {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("amt", amt);
+		queryParams.put("cursor", cursor);
+		var uri = Constants.ENDPOINT_LIST_USERS_PAGINATED + StringUtils.getEncodedQueryString(queryParams);
+		return this.request.get(uri, UserBulk.class);
+	}
+
+	@LoginRequired
+	public List<User> listUsers(List<Object> usersId) throws XMindException {
+		Map<String, Object> bodyParams = new HashMap<>();
+		bodyParams.put("users_id", usersId);
+		var uri = Constants.ENDPOINT_LIST_USERS_BY_IDS;
+		return this.request.post(uri, bodyParams, UserList.class).getUsers();
+	}
+
+}

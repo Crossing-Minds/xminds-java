@@ -43,7 +43,7 @@ public class Constants {
 	public static final String ENDPOINT_CREATE_SERVICE_ACCOUNT = "accounts/service/";
 	public static final String ENDPOINT_DELETE_SERVICE_ACCOUNT = "accounts/service/";
 	public static final String ENDPOINT_RESEND_EMAIL_VERIFICATION_CODE = "accounts/resend-verification-code/";
-	public static final String ENDPOINT_VERIFY_EMAIL = "accounts/verify/?code=%s&email=%s";
+	public static final String ENDPOINT_VERIFY_EMAIL = "accounts/verify/";
 	public static final String ENDPOINT_DELETE_CURRENT_ACCOUNT = "accounts/";
 	// Login
 	public static final String ENDPOINT_LOGIN_INDIVIDUAL_ACCOUNT = "login/individual/";
@@ -56,9 +56,30 @@ public class Constants {
 	public static final String ENDPOINT_CURRENT_DATABASE = "databases/current/";
 	public static final String ENDPOINT_DELETE_CURRENT_DATABASE = "databases/current/";
 	public static final String ENDPOINT_CURRENT_DATABASE_STATUS = "databases/current/status/";
+	// Users
+	public static final String ENDPOINT_LIST_ALL_USER_PROPERTIES = "users-properties/";
+	public static final String ENDPOINT_CREATE_USER_PROPERTY = "users-properties/";
+	public static final String ENDPOINT_GET_USER_PROPERTY = "users-properties/%s/";
+	public static final String ENDPOINT_DELETE_USER_PROPERTY = "users-properties/%s/";
+	public static final String ENDPOINT_GET_USER = "users/%s/";
+	public static final String ENDPOINT_CREATE_UPDATE_USER = "users/%s/";
+	public static final String ENDPOINT_CREATE_UPDATE_USERS_BULK = "users-bulk/";
+	public static final String ENDPOINT_LIST_USERS_PAGINATED = "users-bulk/";
+	public static final String ENDPOINT_LIST_USERS_BY_IDS = "users-bulk/list/";
+	// Items
+	public static final String ENDPOINT_LIST_ALL_ITEM_PROPERTIES = "items-properties/";
+	public static final String ENDPOINT_CREATE_ITEM_PROPERTY = "items-properties/";
+	public static final String ENDPOINT_GET_ITEM_PROPERTY = "items-properties/%s/";
+	public static final String ENDPOINT_DELETE_ITEM_PROPERTY = "items-properties/%s/";
+	public static final String ENDPOINT_GET_PROPERTIES_OF_ITEM = "items/%s/";
+	public static final String ENDPOINT_CREATE_UPDATE_ITEM = "items/%s/";
+	public static final String ENDPOINT_CREATE_UPDATE_ITEMS_BULK = "items-bulk/";
+	public static final String ENDPOINT_LIST_PROPERTIES_ALL_ITEMS_BULK = "items-bulk/";
+	public static final String ENDPOINT_LIST_PROPERTIES_MANY_ITEMS_BY_ID = "items-bulk/list/";
 
 	/**
 	 * Related to literals
 	 */
 	public static final String UNKNOWN_ERROR_MSG = "Unknown error from server";
+
 }
