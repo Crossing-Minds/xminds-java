@@ -405,5 +405,5 @@ public interface XMindClient {
 	 * @return UserRatingBulk
 	 * @throws XMindException
 	 */
-	UserRatingBulk listAllUsersRatingsBulk(int amt, String cursor) throws XMindException;
+	UserRatingBulk listRatings(int amt, String cursor) throws XMindException;
 }

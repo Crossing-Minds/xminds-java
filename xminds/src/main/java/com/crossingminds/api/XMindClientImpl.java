@@ -370,7 +370,7 @@ public class XMindClientImpl implements XMindClient {
 	}
 
 	@LoginRequired
-	public UserRatingBulk listAllUsersRatingsBulk(int amt, String cursor) throws XMindException {
+	public UserRatingBulk listRatings(int amt, String cursor) throws XMindException {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("amt", amt);
 		queryParams.put("cursor", cursor);
