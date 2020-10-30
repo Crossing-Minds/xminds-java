@@ -223,6 +223,7 @@ public interface XMindClient {
 	 * Get one user given its ID.
 	 *
 	 * @param userId
+	 * @return User
 	 * @throws XMindException
 	 */
 	User getUser(Object userId) throws XMindException;

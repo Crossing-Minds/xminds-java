@@ -3,6 +3,7 @@ package com.crossingminds.api.response;
 import java.util.List;
 
 import com.crossingminds.api.model.Database;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -18,8 +19,9 @@ import lombok.experimental.SuperBuilder;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties("amt")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({ "databases" })
+@JsonPropertyOrder({ "has_next", "next_page", "databases" })
 public class DatabasePage extends Page {
 
 	@JsonProperty("databases")

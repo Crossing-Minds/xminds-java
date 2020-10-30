@@ -275,7 +275,7 @@ public class XMindClientImpl implements XMindClient {
 
 	@LoginRequired
 	public Property getItemProperty(String propertyName) throws XMindException {
-		var uri = String.format(Constants.ENDPOINT_GET_ITEM, propertyName);
+		var uri = String.format(Constants.ENDPOINT_GET_ITEM_PROPERTY, propertyName);
 		return this.request.get(uri, Property.class);
 	}
 

@@ -55,10 +55,7 @@ class LoginTest extends BaseMockTest {
 		setUpHttpClientMock(HttpMethods.POST, path, respMock, "", individualAccount.getDbId());
 		var token = client.loginIndividual(individualAccount);
 		// check test
-		Assertions.assertNotNull(token.getJwtToken());
-		Assertions.assertEquals("eyJ0eX...", token.getJwtToken());
-		Assertions.assertEquals("mW+k/K...", token.getRefreshToken());
-		Assertions.assertEquals("wSSZQbPxKvBrk_n2B_m6ZA", token.getDatabase().getId());
+		verifyJSONResponse(respMock, token);
 		httpClientMock.verify().post(path).withBody(Matchers.containsString(toStringJson(individualAccount))).called();
 	}
 
@@ -81,10 +78,7 @@ class LoginTest extends BaseMockTest {
 		setUpHttpClientMock(HttpMethods.POST, path, respMock, "", serviceAccount.getDbId());
 		var token = client.loginService(serviceAccount);
 		// check test
-		Assertions.assertNotNull(token.getJwtToken());
-		Assertions.assertEquals("eyJ0eX...", token.getJwtToken());
-		Assertions.assertEquals("mW+k/K...", token.getRefreshToken());
-		Assertions.assertEquals("wSSZQbPxKvBrk_n2B_m6ZA", token.getDatabase().getId());
+		verifyJSONResponse(respMock, token);
 		httpClientMock.verify().post(path).withBody(Matchers.containsString(toStringJson(serviceAccount))).called();
 	}
 
@@ -107,10 +101,7 @@ class LoginTest extends BaseMockTest {
 		setUpHttpClientMock(HttpMethods.POST, path, respMock, "", "");
 		var token = client.loginRefreshToken();
 		// check test
-		Assertions.assertNotNull(token.getJwtToken());
-		Assertions.assertEquals("eyJ0eX...", token.getJwtToken());
-		Assertions.assertEquals("mW+k/K...", token.getRefreshToken());
-		Assertions.assertEquals("wSSZQbPxKvBrk_n2B_m6ZA", token.getDatabase().getId());
+		verifyJSONResponse(respMock, token);
 		httpClientMock.verify().post(path).called();
 	}
 	

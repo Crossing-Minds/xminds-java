@@ -24,8 +24,4 @@ public class ItemMap implements Serializable {
 	@JsonProperty("item")
 	public Item item;
 
-	public Item getItem() {
-		return this.item;
-	}
-
 }

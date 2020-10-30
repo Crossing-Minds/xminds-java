@@ -1,5 +1,6 @@
 package com.crossingminds.api;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -48,13 +49,7 @@ class AccountTest extends BaseMockTest {
 		setUpHttpClientMock(HttpMethods.GET, path, respMock, "", "");
 		var accounts = client.listAllAccounts();
 		// check test
-		Assertions.assertNotNull(accounts);
-		Assertions.assertNotNull(accounts.getIndividualAccounts());
-		Assertions.assertNotNull(accounts.getServiceAccounts());
-		Assertions.assertTrue(accounts.getIndividualAccounts().size()>0);
-		Assertions.assertTrue(accounts.getServiceAccounts().size()>0);
-		Assertions.assertEquals(EXAMPLE_EMAIL, accounts.getIndividualAccounts().get(0).getEmail());
-		Assertions.assertEquals("myapp-server", accounts.getServiceAccounts().get(0).getName());
+		verifyJSONResponse(respMock, accounts);
 		httpClientMock.verify().get(path).called();
 	}
 
@@ -70,9 +65,8 @@ class AccountTest extends BaseMockTest {
 		var response = client.createIndividualAccount(individualAccount);
 		// check test
 		Assertions.assertNotNull(response);
-		Assertions.assertNotNull(response.getId());
 		Assertions.assertEquals("z3hn6UoSYWtK4KUA", response.getId());
-		httpClientMock.verify().post(path).called();
+		httpClientMock.verify().post(path).withBody(Matchers.containsString(toStringJson(individualAccount))).called();
 	}
 
 	@Test
@@ -87,9 +81,8 @@ class AccountTest extends BaseMockTest {
 		var response = client.createServiceAccount(serviceAccount);
 		// check test
 		Assertions.assertNotNull(response);
-		Assertions.assertNotNull(response.getId());
 		Assertions.assertEquals("z3hn6UoSYWtK4KUA", response.getId());
-		httpClientMock.verify().post(path).called();
+		httpClientMock.verify().post(path).withBody(Matchers.containsString(toStringJson(serviceAccount))).called();
 	}
 
 	@Test
@@ -101,7 +94,7 @@ class AccountTest extends BaseMockTest {
 		setUpHttpClientMock(HttpMethods.DELETE, path, respMock, "", individualAccount.getEmail());
 		client.deleteIndividualAccount(individualAccount);
 		// check test
-		httpClientMock.verify().delete(path).called();
+		httpClientMock.verify().delete(path).withBody(Matchers.containsString(toStringJson(individualAccount))).called();
 	}
 
 	@Test
@@ -113,7 +106,7 @@ class AccountTest extends BaseMockTest {
 		setUpHttpClientMock(HttpMethods.DELETE, path, respMock, "", serviceAccount.getName());
 		client.deleteServiceAccount(serviceAccount);
 		// check test
-		httpClientMock.verify().delete(path).called();
+		httpClientMock.verify().delete(path).withBody(Matchers.containsString(toStringJson(serviceAccount))).called();
 	}
 
 	@Test

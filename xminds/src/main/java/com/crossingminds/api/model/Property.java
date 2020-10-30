@@ -7,14 +7,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({ "property_name", "value_type", "repeated" })
 public class Property extends Base implements Serializable {

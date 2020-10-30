@@ -2,6 +2,10 @@ package com.crossingminds.api;
 
 import static org.hamcrest.Matchers.containsString;
 
+import org.junit.jupiter.api.Assertions;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+
 import com.crossingminds.api.model.Database;
 import com.crossingminds.api.model.IndividualAccount;
 import com.crossingminds.api.model.RootAccount;
@@ -19,11 +23,14 @@ class BaseMockTest {
 	String host = "http://localhost";
 	final ObjectMapper mapper = new ObjectMapper();
 	// Accounts
-	IndividualAccount individualAccount = IndividualAccount.builder().email("testindividual@mail.com").password("testP@ssw@rd1").dbId("wSSZQbPxKvBrk_n2B_m6ZA").build();
-	ServiceAccount serviceAccount = ServiceAccount.builder().name("myapp-server").password("abc123@#$").dbId("wSSZQbPxKvBrk_n2B_m6ZA").build();
+	IndividualAccount individualAccount = IndividualAccount.builder().email("testindividual@mail.com")
+			.password("testP@ssw@rd1").dbId("wSSZQbPxKvBrk_n2B_m6ZA").build();
+	ServiceAccount serviceAccount = ServiceAccount.builder().name("myapp-server").password("abc123@#$")
+			.dbId("wSSZQbPxKvBrk_n2B_m6ZA").build();
 	RootAccount rootAccount = RootAccount.builder().email("email_test@my_app.com").password("MyP433w0rD").build();
-	Database database = Database.builder().name("Example Test DB name").description("Example Test DB longer description").userIdType("uint32").itemIdType("uuid").build();
-
+	Database database = Database.builder().name("Example Test DB name")
+			.description("Example Test DB longer description").userIdType("uint32").itemIdType("uuid").build();
+	
 	// Package methods
 	void setUpHttpClientMock(String method, String path, String respMock, String queryParams, String bodyParam) {
 		switch (method) {
@@ -71,6 +78,15 @@ class BaseMockTest {
 		client = XMindClientImpl.XMindFactory.getClient(httpClientMock, host + "/");
 	}
 
+	public void verifyJSONResponse(String expected, Object received) {
+		try {
+			Assertions.assertNotNull(received);
+			JSONAssert.assertEquals(expected, this.toStringJson(received), JSONCompareMode.STRICT);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+
 	String toStringJson(Object obj) {
 		try {
 			return this.mapper.writeValueAsString(obj);
@@ -78,5 +94,5 @@ class BaseMockTest {
 			throw new IllegalArgumentException(e);
 		}
 	}
-
+	
 }

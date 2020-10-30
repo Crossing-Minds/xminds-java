@@ -20,7 +20,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties("items_m2m")
+@JsonIgnoreProperties({"items_m2m", "amt"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({ "items", "has_next" })
 public class ItemBulk extends Bulk implements Serializable {

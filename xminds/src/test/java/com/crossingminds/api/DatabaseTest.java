@@ -1,5 +1,6 @@
 package com.crossingminds.api;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -42,13 +43,7 @@ public class DatabaseTest extends BaseMockTest {
 		setUpHttpClientMock(HttpMethods.GET, path, respMock, "", "");
 		var databasePage = client.listAllDatabases();
 		// check test
-		Assertions.assertNotNull(databasePage);
-		Assertions.assertNotNull(databasePage.getDatabases());
-		Assertions.assertTrue(databasePage.getDatabases().size()>0);
-		Assertions.assertTrue(databasePage.getNextPage()==4);
-		Assertions.assertTrue(databasePage.isHasNext());
-		Assertions.assertEquals("wSSZQbPxKvBrk_n2B_m6ZA", databasePage.getDatabases().get(0).getId());
-		Assertions.assertEquals("Example DB name", databasePage.getDatabases().get(0).getName());
+		verifyJSONResponse(respMock, databasePage);
 		httpClientMock.verify().get(path).called();
 	}
 
@@ -64,9 +59,8 @@ public class DatabaseTest extends BaseMockTest {
 		var response = client.createDatabase(database);
 		// check test
 		Assertions.assertNotNull(response);
-		Assertions.assertNotNull(response.getId());
 		Assertions.assertEquals("z3hn6UoSYWtK4KUA", response.getId());
-		httpClientMock.verify().post(path).called();
+		httpClientMock.verify().post(path).withBody(Matchers.containsString(toStringJson(database))).called();
 	}
 
 	@Test
@@ -89,16 +83,7 @@ public class DatabaseTest extends BaseMockTest {
 		setUpHttpClientMock(HttpMethods.GET, path, respMock, "", "");
 		var database = client.getCurrentDatabase();
 		// check test
-		Assertions.assertNotNull(database);
-		Assertions.assertNotNull(database.getCounters());
-		Assertions.assertTrue(database.getCounters().getRating()==130);
-		Assertions.assertTrue(database.getCounters().getUser()==70);
-		Assertions.assertTrue(database.getCounters().getItem()==81);
-		Assertions.assertEquals("wSSZQbPxKvBrk_n2B_m6ZA", database.getId());
-		Assertions.assertEquals("Example DB name", database.getName());
-		Assertions.assertEquals("Example DB longer description", database.getDescription());
-		Assertions.assertEquals("uint32", database.getUserIdType());
-		Assertions.assertEquals("uuid", database.getItemIdType());
+		verifyJSONResponse(respMock, database);
 		httpClientMock.verify().get(path).called();
 	}
 
@@ -109,7 +94,7 @@ public class DatabaseTest extends BaseMockTest {
 		var respMock = "";
 		// call Endpoint
 		setUpHttpClientMock(HttpMethods.DELETE, path, respMock, "", "");
-		client.deleteCurrentDatabase();;
+		client.deleteCurrentDatabase();
 		// check test
 		httpClientMock.verify().delete(path).called();
 	}
@@ -125,9 +110,7 @@ public class DatabaseTest extends BaseMockTest {
 		setUpHttpClientMock(HttpMethods.GET, path, respMock, "", "");
 		var database = client.getCurrentDatabaseStatus();
 		// check test
-		Assertions.assertNotNull(database);
-		Assertions.assertNotNull(database.getStatus());
-		Assertions.assertEquals("ready", database.getStatus());
+		verifyJSONResponse(respMock, database);
 		httpClientMock.verify().get(path).called();
 	}
 
