@@ -71,11 +71,11 @@ public class Constants {
 	public static final String ENDPOINT_CREATE_ITEM_PROPERTY = "items-properties/";
 	public static final String ENDPOINT_GET_ITEM_PROPERTY = "items-properties/%s/";
 	public static final String ENDPOINT_DELETE_ITEM_PROPERTY = "items-properties/%s/";
-	public static final String ENDPOINT_GET_PROPERTIES_OF_ITEM = "items/%s/";
+	public static final String ENDPOINT_GET_ITEM = "items/%s/";
 	public static final String ENDPOINT_CREATE_UPDATE_ITEM = "items/%s/";
 	public static final String ENDPOINT_CREATE_UPDATE_ITEMS_BULK = "items-bulk/";
-	public static final String ENDPOINT_LIST_PROPERTIES_ALL_ITEMS_BULK = "items-bulk/";
-	public static final String ENDPOINT_LIST_PROPERTIES_MANY_ITEMS_BY_ID = "items-bulk/list/";
+	public static final String ENDPOINT_LIST_ITEMS_PAGINATED = "items-bulk/";
+	public static final String ENDPOINT_LIST_ITEMS_BY_ID = "items-bulk/list/";
 
 	/**
 	 * Related to literals

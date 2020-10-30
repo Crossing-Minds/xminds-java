@@ -9,6 +9,7 @@ import com.crossingminds.api.exception.RefreshTokenExpiredException;
 import com.crossingminds.api.exception.XMindException;
 import com.crossingminds.api.model.Database;
 import com.crossingminds.api.model.IndividualAccount;
+import com.crossingminds.api.model.Item;
 import com.crossingminds.api.model.Property;
 import com.crossingminds.api.model.RootAccount;
 import com.crossingminds.api.model.ServiceAccount;
@@ -17,6 +18,7 @@ import com.crossingminds.api.model.User;
 import com.crossingminds.api.response.AccountList;
 import com.crossingminds.api.response.DatabasePage;
 import com.crossingminds.api.response.DatabaseStatus;
+import com.crossingminds.api.response.ItemBulk;
 import com.crossingminds.api.response.PropertyList;
 import com.crossingminds.api.response.UserBulk;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -262,5 +264,80 @@ public interface XMindClient {
 	 * @throws XMindException
 	 */
 	List<User> listUsers(List<Object> usersId) throws XMindException;
+
+	/**
+	 * Retrieve all item-properties for the current database.
+	 *
+	 * @return PropertyList
+	 * @throws XMindException
+	 */
+	PropertyList listAllItemProperties() throws XMindException;
+
+	/**
+	 * Create a new item-property, identified by property_name (case-insensitive).
+	 *
+	 * @param Property (propertyName, valueType, repeated)
+	 * @throws XMindException
+	 */
+	void createItemProperty(Property itemProperty) throws XMindException;
+
+	/**
+	 * Get one item-property given its property_name.
+	 *
+	 * @param propertyName
+	 * @throws XMindException
+	 */
+	Property getItemProperty(String propertyName) throws XMindException;
+
+	/**
+	 * Delete an item-property given by its name
+	 *
+	 * @param propertyName
+	 * @throws XMindException
+	 */
+	void deleteItemProperty(String propertyName) throws XMindException;
+
+	/**
+	 * Get one item given its ID.
+	 *
+	 * @param itemId
+	 * @throws XMindException
+	 */
+	Item getItem(Object itemId) throws XMindException;
+
+	/**
+	 * Create a new item, or update it if the item_id already exists.
+	 *
+	 * @param Item
+	 * @throws XMindException
+	 */
+	void createOrUpdateItem(Item item)  throws XMindException;
+
+	/**
+	 * Create many items in bulk, or update the ones for which the item_id already exist.
+	 *
+	 * @param items
+	 * @throws XMindException
+	 */
+	void createOrUpdateItemsBulk(List<Item> items, Integer chunkSize) throws XMindException;
+
+	/**
+	 * Get multiple items by page.
+	 * The response is paginated, you can control the response amount
+	 * and offset using the query parameters amt and cursor.
+	 *
+	 * @return ItemBulk
+	 * @throws XMindException
+	 */
+	ItemBulk listItemsPaginated(int amt, String cursor) throws XMindException;
+
+	/**
+	 * Get multiple items given their IDs.
+	 *
+	 * @param itemsId (list)
+	 * @return List<Item>
+	 * @throws XMindException
+	 */
+	List<Item> listPropertiesOfManyItems(List<Object> itemsId) throws XMindException;
 
 }
