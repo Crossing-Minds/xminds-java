@@ -21,7 +21,6 @@ import com.crossingminds.api.response.DatabaseStatus;
 import com.crossingminds.api.response.ItemBulk;
 import com.crossingminds.api.response.PropertyList;
 import com.crossingminds.api.response.UserBulk;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface XMindClient {
 
@@ -119,11 +118,10 @@ public interface XMindClient {
 	 * account.
 	 *
 	 * @param email
-	 * @throws JsonProcessingException
 	 * @throws XMindException
 	 * @throws AuthenticationException
 	 */
-	void resendVerificationCode(String email) throws XMindException, JsonProcessingException;
+	void resendVerificationCode(String email) throws XMindException;
 
 	/**
 	 * Useful to verify the email of an individual account. You can't use an
