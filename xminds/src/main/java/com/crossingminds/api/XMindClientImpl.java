@@ -16,6 +16,7 @@ import com.crossingminds.api.exception.XMindException;
 import com.crossingminds.api.model.Base;
 import com.crossingminds.api.model.Database;
 import com.crossingminds.api.model.IndividualAccount;
+import com.crossingminds.api.model.Item;
 import com.crossingminds.api.model.Property;
 import com.crossingminds.api.model.RootAccount;
 import com.crossingminds.api.model.ServiceAccount;
@@ -24,6 +25,9 @@ import com.crossingminds.api.model.User;
 import com.crossingminds.api.response.AccountList;
 import com.crossingminds.api.response.DatabasePage;
 import com.crossingminds.api.response.DatabaseStatus;
+import com.crossingminds.api.response.ItemBulk;
+import com.crossingminds.api.response.ItemList;
+import com.crossingminds.api.response.ItemMap;
 import com.crossingminds.api.response.PropertyList;
 import com.crossingminds.api.response.UserBulk;
 import com.crossingminds.api.response.UserList;
@@ -261,6 +265,68 @@ public class XMindClientImpl implements XMindClient {
 		bodyParams.put("users_id", usersId);
 		var uri = Constants.ENDPOINT_LIST_USERS_BY_IDS;
 		return this.request.post(uri, bodyParams, UserList.class).getUsers();
+	}
+
+	@LoginRequired
+	public PropertyList listAllItemProperties() throws XMindException {
+		return this.request.get(Constants.ENDPOINT_LIST_ALL_ITEM_PROPERTIES, PropertyList.class);
+	}
+
+	@LoginRequired
+	public void createItemProperty(Property itemProperty) throws XMindException {
+		this.request.post(Constants.ENDPOINT_CREATE_ITEM_PROPERTY, itemProperty, Base.class);
+	}
+
+	@LoginRequired
+	public Property getItemProperty(String propertyName) throws XMindException {
+		var uri = String.format(Constants.ENDPOINT_GET_ITEM, propertyName);
+		return this.request.get(uri, Property.class);
+	}
+
+	@LoginRequired
+	public void deleteItemProperty(String propertyName) throws XMindException {
+		var uri = String.format(Constants.ENDPOINT_DELETE_ITEM_PROPERTY, propertyName);
+		this.request.delete(uri, Base.class);
+	}
+
+	@LoginRequired
+	public Item getItem(Object itemId) throws XMindException {
+		var uri = String.format(Constants.ENDPOINT_GET_ITEM, itemId);
+		return this.request.get(uri, ItemMap.class).getItem();
+	}
+
+	@LoginRequired
+	public void createOrUpdateItem(Item item) throws XMindException {
+		var uri = String.format(Constants.ENDPOINT_CREATE_UPDATE_ITEM, item.getItemId());
+		Map<String, Object> bodyParams = new HashMap<>();
+		item.remove("item_id");
+		bodyParams.put("item", item);
+		this.request.put(uri, bodyParams, Base.class);
+	}
+
+	@LoginRequired
+	public void createOrUpdateItemsBulk(List<Item> items, Integer chunkSize) throws XMindException {
+		if(chunkSize == null)
+			chunkSize = 1000; // default value
+		for (List<Item> itemsChunk : ListUtils.partition(items, chunkSize))
+			this.request.put(Constants.ENDPOINT_CREATE_UPDATE_ITEMS_BULK, Map.of("items", itemsChunk), Base.class);
+	}
+
+	@LoginRequired
+	public ItemBulk listItemsPaginated(int amt, String cursor) throws XMindException {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("amt", amt);
+		queryParams.put("cursor", cursor);
+		var uri = Constants.ENDPOINT_LIST_ITEMS_PAGINATED + StringUtils.getEncodedQueryString(queryParams);
+		return this.request.get(uri, ItemBulk.class);
+	}
+
+	@LoginRequired
+	public List<Item> listItems(List<Object> itemsId) throws XMindException {
+		Map<String, Object> bodyParams = new HashMap<>();
+		bodyParams.put("items_id", itemsId);
+		var uri = Constants.ENDPOINT_LIST_ITEMS_BY_ID;
+		return this.request.post(uri, bodyParams, ItemList.class).getItems();
 	}
 
 }
