@@ -342,7 +342,7 @@ public interface XMindClient {
 	 * @return List<Item>
 	 * @throws XMindException
 	 */
-	List<Item> listPropertiesOfManyItems(List<Object> itemsId) throws XMindException;
+	List<Item> listItems(List<Object> itemsId) throws XMindException;
 
 	/**
 	 * Create or update a rating for a user and an item. If the rating exists for the tuple 
@@ -406,5 +406,4 @@ public interface XMindClient {
 	 * @throws XMindException
 	 */
 	UserRatingBulk listAllUsersRatingsBulk(int amt, String cursor) throws XMindException;
-
 }

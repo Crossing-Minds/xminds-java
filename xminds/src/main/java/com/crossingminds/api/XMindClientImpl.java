@@ -326,7 +326,7 @@ public class XMindClientImpl implements XMindClient {
 	}
 
 	@LoginRequired
-	public List<Item> listPropertiesOfManyItems(List<Object> itemsId) throws XMindException {
+	public List<Item> listItems(List<Object> itemsId) throws XMindException {
 		Map<String, Object> bodyParams = new HashMap<>();
 		bodyParams.put("items_id", itemsId);
 		var uri = Constants.ENDPOINT_LIST_ITEMS_BY_ID;
