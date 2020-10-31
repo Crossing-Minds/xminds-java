@@ -16,6 +16,7 @@ import com.crossingminds.api.exception.JwtTokenExpiredException;
 import com.crossingminds.api.exception.XMindException;
 import com.crossingminds.api.model.Base;
 import com.crossingminds.api.model.Database;
+import com.crossingminds.api.model.Filter;
 import com.crossingminds.api.model.IndividualAccount;
 import com.crossingminds.api.model.Item;
 import com.crossingminds.api.model.Property;
@@ -32,6 +33,7 @@ import com.crossingminds.api.response.ItemBulk;
 import com.crossingminds.api.response.ItemList;
 import com.crossingminds.api.response.ItemMap;
 import com.crossingminds.api.response.PropertyList;
+import com.crossingminds.api.response.Recommendation;
 import com.crossingminds.api.response.UserBulk;
 import com.crossingminds.api.response.UserList;
 import com.crossingminds.api.response.UserMap;
@@ -100,6 +102,13 @@ public class XMindClientImpl implements XMindClient {
 		}
 
 		// Protected constructor (Development/Test)
+		protected static XMindClient getClient(String host) {
+			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
+					new Class<?>[] { XMindClient.class },
+					new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), host)));
+		}
+
+		// Protected constructor (Mock/Test)
 		protected static XMindClient getClient(HttpClient httpClient, String host) {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
 					new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(httpClient, host)));
@@ -372,6 +381,49 @@ public class XMindClientImpl implements XMindClient {
 		queryParams.put("cursor", cursor);
 		var uri = Constants.ENDPOINT_LIST_RATINGS_ALL_USERS_BULK + StringUtils.getEncodedQueryString(queryParams);
 		return this.request.get(uri, UserRatingBulk.class);
+	}
+
+	@LoginRequired
+	public Recommendation getRecommendationsItemToItems(Object itemId, Integer amt, String cursor, List<Filter> filters)
+			throws XMindException {
+		Map<String, Object> queryParams = new HashMap<>();
+		if(cursor != null)
+			queryParams.put("cursor", cursor);
+		if(amt != null)
+			queryParams.put("amt", amt);
+		queryParams.put("filters", filters);
+		var uri = String.format(Constants.ENDPOINT_GET_SIMILAR_ITEMS_RECOMMENDATIONS, itemId) + StringUtils.getEncodedQueryString(queryParams);
+		return this.request.get(uri, Recommendation.class);
+	}
+
+	@LoginRequired
+	public Recommendation getRecommendationsSessionToItems(List<Rating> ratings, User userProperties, Integer amt,
+			String cursor, List<Filter> filters, boolean excludeRatedItems) throws XMindException {
+		Map<String, Object> bodyParams = new HashMap<String, Object>();
+		bodyParams.put("ratings", ratings);
+		bodyParams.put("user_properties", userProperties);
+		if(cursor != null)
+			bodyParams.put("cursor", cursor);
+		if(amt != null)
+			bodyParams.put("amt", amt);
+		bodyParams.put("filters", filters);
+		bodyParams.put("exclude_rated_items", true);
+		var uri = Constants.ENDPOINT_GET_SESSION_ITEMS_RECOMMENDATIONS;
+		return this.request.post(uri, bodyParams, Recommendation.class);
+	}
+
+	@LoginRequired
+	public Recommendation getRecommendationsUserToItems(Object userId, Integer amt, String cursor, List<Filter> filters,
+			boolean excludeRatedItems) throws XMindException {
+		Map<String, Object> queryParams = new HashMap<>();
+		if(cursor != null)
+			queryParams.put("cursor", cursor);
+		if(amt != null)
+			queryParams.put("amt", amt);
+		queryParams.put("filters", filters);
+		queryParams.put("exclude_rated_items", true);
+		var uri = String.format(Constants.ENDPOINT_GET_PROFILE_ITEMS_RECOMMENDATIONS, userId) + StringUtils.getEncodedQueryString(queryParams);
+		return this.request.get(uri, Recommendation.class);
 	}
 
 }

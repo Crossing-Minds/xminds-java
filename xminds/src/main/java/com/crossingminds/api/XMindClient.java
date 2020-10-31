@@ -8,6 +8,7 @@ import com.crossingminds.api.exception.NotFoundException;
 import com.crossingminds.api.exception.RefreshTokenExpiredException;
 import com.crossingminds.api.exception.XMindException;
 import com.crossingminds.api.model.Database;
+import com.crossingminds.api.model.Filter;
 import com.crossingminds.api.model.IndividualAccount;
 import com.crossingminds.api.model.Item;
 import com.crossingminds.api.model.Property;
@@ -22,6 +23,7 @@ import com.crossingminds.api.response.DatabasePage;
 import com.crossingminds.api.response.DatabaseStatus;
 import com.crossingminds.api.response.ItemBulk;
 import com.crossingminds.api.response.PropertyList;
+import com.crossingminds.api.response.Recommendation;
 import com.crossingminds.api.response.UserBulk;
 import com.crossingminds.api.response.UserRatingBulk;
 import com.crossingminds.api.response.UserRatingPage;
@@ -405,4 +407,44 @@ public interface XMindClient {
 	 * @throws XMindException
 	 */
 	UserRatingBulk listRatings(int amt, String cursor) throws XMindException;
+
+	/**
+	 * Get similar items.
+	 * 
+	 * @param itemId
+	 * @param amt
+	 * @param cursor
+	 * @param filters
+	 * @return Recommendation
+	 * @throws XMindException
+	 */
+	Recommendation getRecommendationsItemToItems(Object itemId, Integer amt, String cursor, List<Filter> filters) throws XMindException;
+
+	/**
+	 * Get items recommendations given the ratings of an anonymous session.
+	 * 
+	 * @param ratings
+	 * @param userProperties
+	 * @param amt
+	 * @param cursor
+	 * @param filters
+	 * @param excludeRatedItems
+	 * @return Recommendation
+	 * @throws XMindException
+	 */
+	Recommendation getRecommendationsSessionToItems(List<Rating> ratings, User userProperties, Integer amt, String cursor, List<Filter> filters, boolean excludeRatedItems) throws XMindException;
+
+	/**
+	 * Get items recommendations given a user ID.
+	 * 
+	 * @param userId
+	 * @param amt
+	 * @param cursor
+	 * @param filters
+	 * @param excludeRatedItems
+	 * @return Recommendation
+	 * @throws XMindException
+	 */
+	Recommendation getRecommendationsUserToItems(Object userId, Integer amt, String cursor, List<Filter> filters, boolean excludeRatedItems) throws XMindException;
+
 }
