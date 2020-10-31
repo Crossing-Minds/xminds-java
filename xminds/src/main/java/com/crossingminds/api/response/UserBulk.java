@@ -22,13 +22,11 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @JsonIgnoreProperties({"users_m2m", "amt"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({ "users", "has_next" })
+@JsonPropertyOrder({ "users"})
 public class UserBulk extends Bulk implements Serializable {
 
 	@JsonProperty("users")
 	private List<User> users;
-	@JsonProperty("has_next")
-	private boolean hasNext;
 	private static final long serialVersionUID = -6521647095678844299L;
 
 }

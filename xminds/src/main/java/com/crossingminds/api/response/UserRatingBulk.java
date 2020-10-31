@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.crossingminds.api.model.UserRating;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -19,14 +20,13 @@ import lombok.experimental.SuperBuilder;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties("amt")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({ "ratings", "has_next" })
+@JsonPropertyOrder({ "ratings" })
 public class UserRatingBulk extends Bulk implements Serializable {
 
 	@JsonProperty("ratings")
 	private List<UserRating> ratings;
-	@JsonProperty("has_next")
-	private boolean hasNext;
 	private static final long serialVersionUID = 7789202378953572024L;
 
 }

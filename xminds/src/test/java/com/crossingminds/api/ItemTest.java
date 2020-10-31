@@ -177,6 +177,7 @@ public class ItemTest extends BaseTest {
 		// Prepare Test
 		var path = "/" + Constants.ENDPOINT_LIST_ITEMS_PAGINATED;
 		var respMock = "{"
+				+ "      \"has_next\": true,"
 				+ "      \"items\": ["
 				+ "          {"
 				+ "              \"item_id\": \"123e4567-e89b-12d3-a456-426614174000\","
@@ -191,7 +192,6 @@ public class ItemTest extends BaseTest {
 				+ "              \"genres\": [\"thriller\"]"
 				+ "          }"
 				+ "      ],"
-				+ "      \"has_next\": true,"
 				+ "      \"next_cursor\": \"Q21vU1pHb1FjSEp...\""
 				+ "  	}";
 		// call Endpoint

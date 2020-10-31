@@ -25,7 +25,6 @@ import com.crossingminds.api.response.PropertyList;
 import com.crossingminds.api.response.UserBulk;
 import com.crossingminds.api.response.UserRatingBulk;
 import com.crossingminds.api.response.UserRatingPage;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface XMindClient {
 
