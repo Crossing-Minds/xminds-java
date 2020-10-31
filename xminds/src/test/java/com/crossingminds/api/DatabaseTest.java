@@ -15,7 +15,7 @@ import com.pgssoft.httpclient.internal.HttpMethods;
 
 @Testable
 @TestInstance(Lifecycle.PER_CLASS)
-public class DatabaseTest extends BaseMockTest {
+public class DatabaseTest extends BaseTest {
 
 	@BeforeAll
 	public void setUp() {

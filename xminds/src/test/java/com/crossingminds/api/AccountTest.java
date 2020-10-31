@@ -15,7 +15,7 @@ import com.pgssoft.httpclient.internal.HttpMethods;
 
 @Testable
 @TestInstance(Lifecycle.PER_CLASS)
-class AccountTest extends BaseMockTest {
+class AccountTest extends BaseTest {
 
 	private static final String EXAMPLE_EMAIL = "john@example.com";
 

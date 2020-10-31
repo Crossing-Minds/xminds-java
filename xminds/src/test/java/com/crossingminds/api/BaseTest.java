@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pgssoft.httpclient.HttpClientMock;
 import com.pgssoft.httpclient.internal.HttpMethods;
 
-class BaseMockTest {
+class BaseTest {
 
 	// Package attributes
 	XMindClient client;
