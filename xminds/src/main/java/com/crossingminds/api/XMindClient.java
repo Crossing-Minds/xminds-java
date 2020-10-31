@@ -11,16 +11,21 @@ import com.crossingminds.api.model.Database;
 import com.crossingminds.api.model.IndividualAccount;
 import com.crossingminds.api.model.Item;
 import com.crossingminds.api.model.Property;
+import com.crossingminds.api.model.Rating;
 import com.crossingminds.api.model.RootAccount;
 import com.crossingminds.api.model.ServiceAccount;
 import com.crossingminds.api.model.Token;
 import com.crossingminds.api.model.User;
+import com.crossingminds.api.model.UserRating;
 import com.crossingminds.api.response.AccountList;
 import com.crossingminds.api.response.DatabasePage;
 import com.crossingminds.api.response.DatabaseStatus;
 import com.crossingminds.api.response.ItemBulk;
 import com.crossingminds.api.response.PropertyList;
 import com.crossingminds.api.response.UserBulk;
+import com.crossingminds.api.response.UserRatingBulk;
+import com.crossingminds.api.response.UserRatingPage;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface XMindClient {
 
@@ -339,4 +344,66 @@ public interface XMindClient {
 	 */
 	List<Item> listItems(List<Object> itemsId) throws XMindException;
 
+	/**
+	 * Create or update a rating for a user and an item. If the rating exists for the tuple 
+	 * (userId, item_id) then it is updated, otherwise it is created. 
+	 * 
+	 * @param userId
+	 * @param itemId
+	 * @param rating
+	 * @param timestamp
+	 * @throws XMindException
+	 */
+	void createOrUpdateRating(Object userId, Rating rating) throws XMindException;
+
+	/**
+	 * Delete a single rating for a given user.
+	 * 
+	 * @param userId
+	 * @param itemId
+	 * @throws XMindException
+	 */
+	void deleteRating(Object userId, Object itemId) throws XMindException;
+
+	/**
+	 * List the ratings of one user. The response is paginated, you can control the response 
+	 * amount and offset using the query parameters amt and page.
+	 * 
+	 * @param userId
+	 * @param page – Optional. [min: 1] Page to be listed.
+	 * @param amt - Optional. [min: 1 max: 64] Amount of ratings to return 
+	 * @return UserRatingPage
+	 * @throws XMindException
+	 */
+	UserRatingPage listUserRatings(Object userId, int page, int amt) throws XMindException;
+
+	/**
+	 * Create or update bulks of ratings for a single user and many items.
+	 * 
+	 * @param userId
+	 * @param ratings - Rating list
+	 * @throws XMindException
+	 */
+	void createOrUpdateOneUserRatingsBulk(Object userId, List<Rating> ratings, Integer chunkSize) throws XMindException;
+
+	/**
+	 * Create or update large bulks of ratings for many users and many items.
+	 * 
+	 * @param ratings - User Ratings List
+	 * @throws XMindException
+	 */
+	void createOrUpdateRatingsBulk(List<UserRating> userRatings, Integer chunkSize) throws XMindException;
+
+	/**
+	 * List the ratings of one database. 
+	 * 
+	 * The response is paginated, you can control the response 
+	 * amount and offset using the query parameters amt and cursor.
+	 * 
+	 * @param amt
+	 * @param cursor
+	 * @return UserRatingBulk
+	 * @throws XMindException
+	 */
+	UserRatingBulk listRatings(int amt, String cursor) throws XMindException;
 }
