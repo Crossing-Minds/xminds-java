@@ -364,7 +364,7 @@ public class XMindClientImpl implements XMindClient {
 	@LoginRequired
 	public void createOrUpdateRatingsBulk(List<UserRating> userRatings, Integer chunkSize) throws XMindException {
 		if(chunkSize == null)
-			chunkSize = 1000; // default value
+			chunkSize = 4096; // default value
 		for (List<UserRating> userRatingsChunk : ListUtils.partition(userRatings, chunkSize))
 			this.request.put(Constants.ENDPOINT_CREATE_UPDATE_RATINGS_MANY_USERS_BULK, Map.of("ratings", userRatingsChunk), Base.class);
 	}
