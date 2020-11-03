@@ -38,15 +38,19 @@ public class Request {
 	 */
 	private String host = "";
 	/*
-	 * JSON Mapper
+	 * JSON ObjectMapper
 	 */
 	private ObjectMapper mapper;
+	/*
+	 * HttpClient
+	 */
+	private HttpClient httpClient;
 
 	/*
-	 * Base constructor
+	 * Protected Constructor
 	 */
-	public Request(String host) {
-		super();
+	protected Request(HttpClient httpClient, String host) {
+		this.httpClient = httpClient;
 		this.host = !host.isBlank() ? host : Constants.API_URL;
 		this.mapper = new ObjectMapper();
 		this.token = new Token();
@@ -94,13 +98,6 @@ public class Request {
 				.POST(BodyPublishers.ofString(this.writeValueAsString(objRequestBody))).build(), valueType);
 	}
 
-	public <T> T patch(String endpoint, Object objRequestBody, Class<T> valueType) throws XMindException {
-		return sendHttpRequest(
-				getHttpRequestBuilder(getURI(endpoint))
-						.method("PATCH", BodyPublishers.ofString(this.writeValueAsString(objRequestBody))).build(),
-				valueType);
-	}
-
 	public <T> T delete(String endpoint, Object objRequestBody, Class<T> valueType) throws XMindException {
 		return sendHttpRequest(
 				getHttpRequestBuilder(getURI(endpoint))
@@ -114,7 +111,7 @@ public class Request {
 
 	private <T> T sendHttpRequest(HttpRequest request, Class<T> valueType) throws XMindException {
 		try {
-			var response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
+			var response = this.httpClient.send(request, BodyHandlers.ofString());
 			return checkStatusCode(response, valueType);
 		} catch (IOException | InterruptedException e) {
 			throw new ServerException(e, Constants.UNKNOWN_ERROR_MSG, "0", "500", 0);

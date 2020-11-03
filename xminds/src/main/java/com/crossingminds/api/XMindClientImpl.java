@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.http.HttpClient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,6 @@ import com.crossingminds.api.response.UserRatingBulk;
 import com.crossingminds.api.response.UserRatingPage;
 import com.crossingminds.api.utils.Constants;
 import com.crossingminds.api.utils.StringUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -54,14 +54,8 @@ public class XMindClientImpl implements XMindClient {
 	 */
 	private Request request;
 
-	private XMindClientImpl() {
-		super();
-		this.request = new Request("");
-	}
-
-	private XMindClientImpl(String staging) {
-		this();
-		this.request = new Request(staging);
+	private XMindClientImpl(HttpClient httpClient, String host) {
+		this.request = new Request(httpClient, host);
 	}
 
 	/**
@@ -98,14 +92,16 @@ public class XMindClientImpl implements XMindClient {
 			}
 		}
 
+		// Public constructor (Default)
 		public static XMindClient getClient() {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
-					new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl()));
+					new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), "")));
 		}
 
-		public static XMindClient getClient(String stagingHost) {
+		// Protected constructor (Development/Test)
+		protected static XMindClient getClient(HttpClient httpClient, String host) {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
-					new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(stagingHost)));
+					new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(httpClient, host)));
 		}
 
 	}
@@ -164,7 +160,7 @@ public class XMindClientImpl implements XMindClient {
 		return response;
 	}
 
-	public void resendVerificationCode(String email) throws XMindException, JsonProcessingException {
+	public void resendVerificationCode(String email) throws XMindException {
 		ObjectNode bodyParams = JsonNodeFactory.instance.objectNode();
 		bodyParams.put("email", email);
 		this.request.put(Constants.ENDPOINT_RESEND_EMAIL_VERIFICATION_CODE, bodyParams, Base.class);

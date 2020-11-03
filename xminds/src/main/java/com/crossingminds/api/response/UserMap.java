@@ -24,8 +24,4 @@ public class UserMap implements Serializable {
 	@JsonProperty("user")
 	public User user;
 
-	public User getUser() {
-		return this.user;
-	}
-
 }

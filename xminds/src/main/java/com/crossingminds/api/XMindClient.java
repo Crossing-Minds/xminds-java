@@ -24,7 +24,6 @@ import com.crossingminds.api.response.PropertyList;
 import com.crossingminds.api.response.UserBulk;
 import com.crossingminds.api.response.UserRatingBulk;
 import com.crossingminds.api.response.UserRatingPage;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface XMindClient {
 
@@ -122,11 +121,10 @@ public interface XMindClient {
 	 * account.
 	 *
 	 * @param email
-	 * @throws JsonProcessingException
 	 * @throws XMindException
 	 * @throws AuthenticationException
 	 */
-	void resendVerificationCode(String email) throws XMindException, JsonProcessingException;
+	void resendVerificationCode(String email) throws XMindException;
 
 	/**
 	 * Useful to verify the email of an individual account. You can't use an
@@ -228,6 +226,7 @@ public interface XMindClient {
 	 * Get one user given its ID.
 	 *
 	 * @param userId
+	 * @return User
 	 * @throws XMindException
 	 */
 	User getUser(Object userId) throws XMindException;

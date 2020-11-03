@@ -25,6 +25,8 @@
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
 		<httpcomponents-httpclient.version>4.5.12</httpcomponents-httpclient.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
+		<HttpClientMock.version>1.0.0</HttpClientMock.version>
+		<jsonassert.version>1.5.0</jsonassert.version>
 	</properties>
 
 	<dependencyManagement>
@@ -74,6 +76,22 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 			<version>${commons-collections4.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.pgs-soft/HttpClientMock -->
+		<dependency>
+		    <groupId>com.pgs-soft</groupId>
+		    <artifactId>HttpClientMock</artifactId>
+		    <version>${HttpClientMock.version}</version>
+		    <scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.skyscreamer/jsonassert -->
+		<dependency>
+		    <groupId>org.skyscreamer</groupId>
+		    <artifactId>jsonassert</artifactId>
+		    <version>${jsonassert.version}</version>
+		    <scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
