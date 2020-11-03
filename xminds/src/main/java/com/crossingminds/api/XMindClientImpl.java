@@ -22,6 +22,7 @@ import com.crossingminds.api.model.RootAccount;
 import com.crossingminds.api.model.ServiceAccount;
 import com.crossingminds.api.model.Token;
 import com.crossingminds.api.model.User;
+import com.crossingminds.api.model.UserRating;
 import com.crossingminds.api.response.AccountList;
 import com.crossingminds.api.response.DatabasePage;
 import com.crossingminds.api.response.DatabaseStatus;
@@ -32,6 +33,8 @@ import com.crossingminds.api.response.PropertyList;
 import com.crossingminds.api.response.UserBulk;
 import com.crossingminds.api.response.UserList;
 import com.crossingminds.api.response.UserMap;
+import com.crossingminds.api.response.UserRatingBulk;
+import com.crossingminds.api.response.UserRatingPage;
 import com.crossingminds.api.utils.Constants;
 import com.crossingminds.api.utils.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -327,6 +330,51 @@ public class XMindClientImpl implements XMindClient {
 		bodyParams.put("items_id", itemsId);
 		var uri = Constants.ENDPOINT_LIST_ITEMS_BY_ID;
 		return this.request.post(uri, bodyParams, ItemList.class).getItems();
+	}
+
+	@LoginRequired
+	public void createOrUpdateRating(Object userId, UserRating rating) throws XMindException {
+		this.request.put(String.format(Constants.ENDPOINT_CREATE_UPDATE_RATING, userId, rating.getItemId()), rating, Base.class);
+	}
+
+	@LoginRequired
+	public void deleteRating(Object userId, Object itemId) throws XMindException {
+		this.request.delete(String.format(Constants.ENDPOINT_DELETE_RATING, userId, itemId), Base.class);
+	}
+
+	@LoginRequired
+	public UserRatingPage listUserRatings(Object userId, int page, int amt) throws XMindException {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("page", page);
+		queryParams.put("amt", amt);
+		return this.request.get(String.format(Constants.ENDPOINT_LIST_ALL_RATINGS_OF_USER, userId) + 
+				StringUtils.getEncodedQueryString(queryParams), UserRatingPage.class);
+	}
+
+	@LoginRequired
+	public void createOrUpdateOneUserRatingsBulk(Object userId, List<UserRating> ratings, Integer chunkSize) throws XMindException {
+		if(chunkSize == null)
+			chunkSize = 1000; // default value
+		for (List<UserRating> ratingsChunk : ListUtils.partition(ratings, chunkSize))
+			this.request.put(String.format(Constants.ENDPOINT_CREATE_UPDATE_RATINGS_ONE_USER_BULK, userId), 
+					Map.of("ratings", ratingsChunk), Base.class);
+	}
+
+	@LoginRequired
+	public void createOrUpdateRatingsBulk(List<UserRating> userRatings, Integer chunkSize) throws XMindException {
+		if(chunkSize == null)
+			chunkSize = 4096; // default value
+		for (List<UserRating> userRatingsChunk : ListUtils.partition(userRatings, chunkSize))
+			this.request.put(Constants.ENDPOINT_CREATE_UPDATE_RATINGS_MANY_USERS_BULK, Map.of("ratings", userRatingsChunk), Base.class);
+	}
+
+	@LoginRequired
+	public UserRatingBulk listRatings(int amt, String cursor) throws XMindException {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("amt", amt);
+		queryParams.put("cursor", cursor);
+		var uri = Constants.ENDPOINT_LIST_RATINGS_ALL_USERS_BULK + StringUtils.getEncodedQueryString(queryParams);
+		return this.request.get(uri, UserRatingBulk.class);
 	}
 
 }
