@@ -1,18 +1,18 @@
 package com.crossingminds.api.model;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @Data
 @NoArgsConstructor
@@ -20,11 +20,17 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({ "user_id", "ratings" })
-public class UserRating extends Rating {
+@JsonPropertyOrder({ "user_id", "item_id", "rating", "timestamp" })
+public class UserRating implements Serializable {
 
 	@JsonProperty("user_id")
 	private Object userId;
-	private static final long serialVersionUID = -9127339056620185158L;
+	@JsonProperty("item_id")
+	private Object itemId;
+	@JsonProperty("rating")
+	private float rating;
+	@JsonProperty("timestamp")
+	private long timestamp;
+	private static final long serialVersionUID = 4033412927599972749L;
 
 }

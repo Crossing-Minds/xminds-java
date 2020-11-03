@@ -24,7 +24,7 @@ import lombok.experimental.SuperBuilder;
 public class UserRatingBulk extends Bulk implements Serializable {
 
 	@JsonProperty("ratings")
-	private List<UserRating> ratings;
+	private List<UserRating> userRatings;
 	@JsonProperty("has_next")
 	private boolean hasNext;
 	private static final long serialVersionUID = 7789202378953572024L;
