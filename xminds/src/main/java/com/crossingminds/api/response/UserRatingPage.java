@@ -2,7 +2,7 @@ package com.crossingminds.api.response;
 
 import java.util.List;
 
-import com.crossingminds.api.model.Rating;
+import com.crossingminds.api.model.UserRating;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,13 +21,11 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @JsonIgnoreProperties("amt")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({ "user_ratings", "has_next" })
+@JsonPropertyOrder({ "user_ratings" })
 public class UserRatingPage extends Page {
 
 	@JsonProperty("user_ratings")
-	private List<Rating> userRatings;
-	@JsonProperty("has_next")
-	private boolean hasNext;
+	private List<UserRating> userRatings;
 	private static final long serialVersionUID = 2436535301644174245L;
 
 }

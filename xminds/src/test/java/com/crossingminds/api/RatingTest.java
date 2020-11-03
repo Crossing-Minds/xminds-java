@@ -10,7 +10,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.platform.commons.annotation.Testable;
 
 import com.crossingminds.api.exception.XMindException;
-import com.crossingminds.api.model.Rating;
 import com.crossingminds.api.model.UserRating;
 import com.crossingminds.api.utils.Constants;
 import com.pgssoft.httpclient.HttpClientMock;
@@ -118,8 +117,8 @@ public class RatingTest extends BaseTest {
 	// Utils
 	String itemId = "123e4567-e89b-12d3-a456-426614174000";
 	String userId = "12987882-e76b-13d2-f432-287129187297";
-	Rating getRating() {
-		return Rating.builder().itemId(itemId).rating(8.5f).timestamp(1588812345).build();
+	UserRating getRating() {
+		return UserRating.builder().itemId(itemId).rating(8.5f).timestamp(1588812345).build();
 	}
 
 	List<UserRating> getRatingsBulk() {
@@ -134,10 +133,10 @@ public class RatingTest extends BaseTest {
 		return Arrays.asList(userRating, userRating1, userRating2, userRating3, userRating4, userRating5, userRating6, userRating7);
 	}
 
-	List<Rating> getRatings() {
-		Rating rating1 = Rating.builder().itemId("123e4567-e89b-12d3-a456-426614174001").rating(3.5f).timestamp(1588812322).build();
-		Rating rating2 = Rating.builder().itemId("123e4567-e89b-12d3-a456-426614174002").rating(5.0f).timestamp(1580002333).build();
-		Rating rating3 = Rating.builder().itemId("123e4567-e89b-12d3-a456-426614174002").rating(4.8f).timestamp(1580002344).build();
+	List<UserRating> getRatings() {
+		UserRating rating1 = UserRating.builder().itemId("123e4567-e89b-12d3-a456-426614174001").rating(3.5f).timestamp(1588812322).build();
+		UserRating rating2 = UserRating.builder().itemId("123e4567-e89b-12d3-a456-426614174002").rating(5.0f).timestamp(1580002333).build();
+		UserRating rating3 = UserRating.builder().itemId("123e4567-e89b-12d3-a456-426614174002").rating(4.8f).timestamp(1580002344).build();
 		return Arrays.asList(rating1, rating2, rating3);
 	}
 
