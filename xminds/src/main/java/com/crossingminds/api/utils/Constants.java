@@ -83,7 +83,11 @@ public class Constants {
 	public static final String ENDPOINT_CREATE_UPDATE_RATINGS_ONE_USER_BULK = "users/%s/ratings/";
 	public static final String ENDPOINT_CREATE_UPDATE_RATINGS_MANY_USERS_BULK = "ratings-bulk/";
 	public static final String ENDPOINT_LIST_RATINGS_ALL_USERS_BULK = "ratings-bulk/";
-
+	// Recommendation
+	public static final String ENDPOINT_GET_SIMILAR_ITEMS_RECOMMENDATIONS = "recommendation/items/%s/items/";
+	public static final String ENDPOINT_GET_SESSION_ITEMS_RECOMMENDATIONS = "recommendation/sessions/items/";
+	public static final String ENDPOINT_GET_PROFILE_ITEMS_RECOMMENDATIONS = "recommendation/users/%s/items/";
+	
 	/**
 	 * Related to literals
 	 */
