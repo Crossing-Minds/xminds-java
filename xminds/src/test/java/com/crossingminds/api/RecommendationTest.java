@@ -14,8 +14,8 @@ import org.junit.platform.commons.annotation.Testable;
 
 import com.crossingminds.api.exception.XMindException;
 import com.crossingminds.api.model.Filter;
-import com.crossingminds.api.model.Rating;
 import com.crossingminds.api.model.User;
+import com.crossingminds.api.model.UserRating;
 import com.crossingminds.api.utils.Constants;
 import com.crossingminds.api.utils.StringUtils;
 import com.pgssoft.httpclient.HttpClientMock;
@@ -125,10 +125,10 @@ public class RecommendationTest extends BaseTest {
 		return user;
 	}
 
-	List<Rating> getRatings() {
-		Rating rating1 = Rating.builder().itemId("123e4567-e89b-12d3-a456-426614174001").rating(3.5f).build();
-		Rating rating2 = Rating.builder().itemId("123e4567-e89b-12d3-a456-426614174002").rating(5.0f).build();
-		Rating rating3 = Rating.builder().itemId("123e4567-e89b-12d3-a456-426614174003").rating(4.8f).build();
+	List<UserRating> getRatings() {
+		UserRating rating1 = UserRating.builder().itemId("123e4567-e89b-12d3-a456-426614174001").rating(3.5f).build();
+		UserRating rating2 = UserRating.builder().itemId("123e4567-e89b-12d3-a456-426614174002").rating(5.0f).build();
+		UserRating rating3 = UserRating.builder().itemId("123e4567-e89b-12d3-a456-426614174003").rating(4.8f).build();
 		return Arrays.asList(rating1, rating2, rating3);
 	}
 }

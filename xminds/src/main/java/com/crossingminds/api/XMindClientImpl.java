@@ -396,7 +396,7 @@ public class XMindClientImpl implements XMindClient {
 	}
 
 	@LoginRequired
-	public Recommendation getRecommendationsSessionToItems(List<Rating> ratings, User userProperties, Integer amt,
+	public Recommendation getRecommendationsSessionToItems(List<UserRating> ratings, User userProperties, Integer amt,
 			String cursor, List<Filter> filters, boolean excludeRatedItems) throws XMindException {
 		Map<String, Object> bodyParams = new HashMap<String, Object>();
 		bodyParams.put("ratings", ratings);

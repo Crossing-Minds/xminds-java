@@ -431,7 +431,7 @@ public interface XMindClient {
 	 * @return Recommendation
 	 * @throws XMindException
 	 */
-	Recommendation getRecommendationsSessionToItems(List<Rating> ratings, User userProperties, Integer amt, String cursor, List<Filter> filters, boolean excludeRatedItems) throws XMindException;
+	Recommendation getRecommendationsSessionToItems(List<UserRating> ratings, User userProperties, Integer amt, String cursor, List<Filter> filters, boolean excludeRatedItems) throws XMindException;
 
 	/**
 	 * Get items recommendations given a user ID.
