@@ -78,6 +78,16 @@ class BaseTest {
 		client = XMindClientImpl.XMindFactory.getClient(httpClientMock, host + "/");
 	}
 
+	// Package methods
+	void setUpHttpClientMockException(String method, String path, String respMock, String queryParams, String bodyParam) {
+		switch (method) {
+		case HttpMethods.GET:
+			httpClientMock.onGet().withPath(path).doReturnJSON(respMock).withStatus(401);
+			break;
+		}
+		client = XMindClientImpl.XMindFactory.getClient(httpClientMock, host + "/");
+	}
+
 	public void verifyJSONResponse(String expected, Object received) {
 		try {
 			Assertions.assertNotNull(received);
