@@ -1,0 +1,14 @@
+
+stages:
+  - tests
+
+
+# On all branches, run unit tests
+unit test:
+  stage: tests
+  image: maven:3.6.3
+  script:
+    - cd xminds
+    - mvn clean test
+  tags:
+    - open-source-unit-test
