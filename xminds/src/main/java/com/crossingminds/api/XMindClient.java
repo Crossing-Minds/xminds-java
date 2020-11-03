@@ -12,7 +12,6 @@ import com.crossingminds.api.model.Filter;
 import com.crossingminds.api.model.IndividualAccount;
 import com.crossingminds.api.model.Item;
 import com.crossingminds.api.model.Property;
-import com.crossingminds.api.model.Rating;
 import com.crossingminds.api.model.RootAccount;
 import com.crossingminds.api.model.ServiceAccount;
 import com.crossingminds.api.model.Token;
@@ -355,7 +354,7 @@ public interface XMindClient {
 	 * @param timestamp
 	 * @throws XMindException
 	 */
-	void createOrUpdateRating(Object userId, Rating rating) throws XMindException;
+	void createOrUpdateRating(Object userId, UserRating rating) throws XMindException;
 
 	/**
 	 * Delete a single rating for a given user.
@@ -382,15 +381,15 @@ public interface XMindClient {
 	 * Create or update bulks of ratings for a single user and many items.
 	 * 
 	 * @param userId
-	 * @param ratings - Rating list
+	 * @param ratings - UserRating list
 	 * @throws XMindException
 	 */
-	void createOrUpdateOneUserRatingsBulk(Object userId, List<Rating> ratings, Integer chunkSize) throws XMindException;
+	void createOrUpdateOneUserRatingsBulk(Object userId, List<UserRating> ratings, Integer chunkSize) throws XMindException;
 
 	/**
 	 * Create or update large bulks of ratings for many users and many items.
 	 * 
-	 * @param ratings - User Ratings List
+	 * @param ratings - UserRating List
 	 * @throws XMindException
 	 */
 	void createOrUpdateRatingsBulk(List<UserRating> userRatings, Integer chunkSize) throws XMindException;

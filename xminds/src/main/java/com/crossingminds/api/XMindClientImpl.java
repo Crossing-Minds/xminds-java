@@ -20,7 +20,6 @@ import com.crossingminds.api.model.Filter;
 import com.crossingminds.api.model.IndividualAccount;
 import com.crossingminds.api.model.Item;
 import com.crossingminds.api.model.Property;
-import com.crossingminds.api.model.Rating;
 import com.crossingminds.api.model.RootAccount;
 import com.crossingminds.api.model.ServiceAccount;
 import com.crossingminds.api.model.Token;
@@ -288,7 +287,7 @@ public class XMindClientImpl implements XMindClient {
 
 	@LoginRequired
 	public Property getItemProperty(String propertyName) throws XMindException {
-		var uri = String.format(Constants.ENDPOINT_GET_ITEM_PROPERTY, propertyName);
+		var uri = String.format(Constants.ENDPOINT_GET_ITEM, propertyName);
 		return this.request.get(uri, Property.class);
 	}
 
@@ -339,7 +338,7 @@ public class XMindClientImpl implements XMindClient {
 	}
 
 	@LoginRequired
-	public void createOrUpdateRating(Object userId, Rating rating) throws XMindException {
+	public void createOrUpdateRating(Object userId, UserRating rating) throws XMindException {
 		this.request.put(String.format(Constants.ENDPOINT_CREATE_UPDATE_RATING, userId, rating.getItemId()), rating, Base.class);
 	}
 
@@ -358,10 +357,10 @@ public class XMindClientImpl implements XMindClient {
 	}
 
 	@LoginRequired
-	public void createOrUpdateOneUserRatingsBulk(Object userId, List<Rating> ratings, Integer chunkSize) throws XMindException {
+	public void createOrUpdateOneUserRatingsBulk(Object userId, List<UserRating> ratings, Integer chunkSize) throws XMindException {
 		if(chunkSize == null)
 			chunkSize = 1000; // default value
-		for (List<Rating> ratingsChunk : ListUtils.partition(ratings, chunkSize))
+		for (List<UserRating> ratingsChunk : ListUtils.partition(ratings, chunkSize))
 			this.request.put(String.format(Constants.ENDPOINT_CREATE_UPDATE_RATINGS_ONE_USER_BULK, userId), 
 					Map.of("ratings", ratingsChunk), Base.class);
 	}
@@ -369,7 +368,7 @@ public class XMindClientImpl implements XMindClient {
 	@LoginRequired
 	public void createOrUpdateRatingsBulk(List<UserRating> userRatings, Integer chunkSize) throws XMindException {
 		if(chunkSize == null)
-			chunkSize = 1000; // default value
+			chunkSize = 4096; // default value
 		for (List<UserRating> userRatingsChunk : ListUtils.partition(userRatings, chunkSize))
 			this.request.put(Constants.ENDPOINT_CREATE_UPDATE_RATINGS_MANY_USERS_BULK, Map.of("ratings", userRatingsChunk), Base.class);
 	}
