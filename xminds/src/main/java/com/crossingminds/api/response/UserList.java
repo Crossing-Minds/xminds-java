@@ -24,7 +24,7 @@ import lombok.Setter;
 public class UserList implements Serializable {
 
 	@JsonProperty("users")
-	public List<User> users;
+	private List<User> users;
 	private static final long serialVersionUID = -3239695002786787653L;
 
 }

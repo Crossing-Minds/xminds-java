@@ -21,7 +21,7 @@ import com.pgssoft.httpclient.internal.HttpMethods;
 
 @Testable
 @TestInstance(Lifecycle.PER_CLASS)
-public class UserTest extends BaseTest {
+class UserTest extends BaseTest {
 
 	@BeforeAll
 	public void setUp() {
@@ -133,7 +133,7 @@ public class UserTest extends BaseTest {
 		var respMock = "";
 		// call Endpoint
 		setUpHttpClientMock(HttpMethods.PUT, path, respMock, "", "");
-		client.createOrUpdateUsersBulk(getUsersBulk(), 1000);
+		client.createOrUpdateUsersBulk(getUsersBulk(), null);
 		// check test
 		httpClientMock.verify().put(path).called();
 	}

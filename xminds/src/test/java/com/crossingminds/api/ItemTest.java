@@ -21,7 +21,7 @@ import com.pgssoft.httpclient.internal.HttpMethods;
 
 @Testable
 @TestInstance(Lifecycle.PER_CLASS)
-public class ItemTest extends BaseTest {
+class ItemTest extends BaseTest {
 
 	@BeforeAll
 	public void setUp() {

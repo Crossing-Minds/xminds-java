@@ -258,7 +258,7 @@ public interface XMindClient {
 	 * @return UserBulk
 	 * @throws XMindException
 	 */
-	UserBulk listUsersPaginated(int amt, String cursor) throws XMindException;
+	UserBulk listUsersPaginated(Integer amt, String cursor) throws XMindException;
 
 	/**
 	 * Get multiple users given their IDs.
@@ -333,7 +333,7 @@ public interface XMindClient {
 	 * @return ItemBulk
 	 * @throws XMindException
 	 */
-	ItemBulk listItemsPaginated(int amt, String cursor) throws XMindException;
+	ItemBulk listItemsPaginated(Integer amt, String cursor) throws XMindException;
 
 	/**
 	 * Get multiple items given their IDs.
@@ -375,7 +375,7 @@ public interface XMindClient {
 	 * @return UserRatingPage
 	 * @throws XMindException
 	 */
-	UserRatingPage listUserRatings(Object userId, int page, int amt) throws XMindException;
+	UserRatingPage listUserRatings(Object userId, Integer page, Integer amt) throws XMindException;
 
 	/**
 	 * Create or update bulks of ratings for a single user and many items.
@@ -405,7 +405,7 @@ public interface XMindClient {
 	 * @return UserRatingBulk
 	 * @throws XMindException
 	 */
-	UserRatingBulk listRatings(int amt, String cursor) throws XMindException;
+	UserRatingBulk listRatings(Integer amt, String cursor) throws XMindException;
 
 	/**
 	 * Get similar items.

@@ -1,7 +1,5 @@
 package com.crossingminds.api.model;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -19,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({ "jwtToken", "refresh_token", "database" })
-public class Token extends Base implements Serializable {
+public class Token extends Base {
 
 	@JsonProperty("token")
 	private String jwtToken;

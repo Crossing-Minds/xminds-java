@@ -22,6 +22,6 @@ public class UserMap implements Serializable {
 
 	private static final long serialVersionUID = 3825982900617432861L;
 	@JsonProperty("user")
-	public User user;
+	private User user;
 
 }

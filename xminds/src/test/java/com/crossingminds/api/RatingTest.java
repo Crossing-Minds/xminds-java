@@ -17,7 +17,7 @@ import com.pgssoft.httpclient.internal.HttpMethods;
 
 @Testable
 @TestInstance(Lifecycle.PER_CLASS)
-public class RatingTest extends BaseTest {
+class RatingTest extends BaseTest {
 
 	@BeforeAll
 	public void setUp() {

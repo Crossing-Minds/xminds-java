@@ -51,6 +51,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class XMindClientImpl implements XMindClient {
 
+	private static final String AMT = "amt";
+	private static final String RATINGS = "ratings";
+	private static final String FILTERS = "filters";
+	private static final String CURSOR = "cursor";
 	/*
 	 * Not accessible to final client
 	 */
@@ -259,10 +263,10 @@ public class XMindClientImpl implements XMindClient {
 	}
 
 	@LoginRequired
-	public UserBulk listUsersPaginated(int amt, String cursor) throws XMindException {
+	public UserBulk listUsersPaginated(Integer amt, String cursor) throws XMindException {
 		Map<String, Object> queryParams = new HashMap<>();
-		queryParams.put("amt", amt);
-		queryParams.put("cursor", cursor);
+		queryParams.put(CURSOR, cursor);
+		queryParams.put(AMT, amt);
 		var uri = Constants.ENDPOINT_LIST_USERS_PAGINATED + StringUtils.getEncodedQueryString(queryParams);
 		return this.request.get(uri, UserBulk.class);
 	}
@@ -287,7 +291,7 @@ public class XMindClientImpl implements XMindClient {
 
 	@LoginRequired
 	public Property getItemProperty(String propertyName) throws XMindException {
-		var uri = String.format(Constants.ENDPOINT_GET_ITEM, propertyName);
+		var uri = String.format(Constants.ENDPOINT_GET_ITEM_PROPERTY, propertyName);
 		return this.request.get(uri, Property.class);
 	}
 
@@ -321,10 +325,10 @@ public class XMindClientImpl implements XMindClient {
 	}
 
 	@LoginRequired
-	public ItemBulk listItemsPaginated(int amt, String cursor) throws XMindException {
+	public ItemBulk listItemsPaginated(Integer amt, String cursor) throws XMindException {
 		Map<String, Object> queryParams = new HashMap<>();
-		queryParams.put("amt", amt);
-		queryParams.put("cursor", cursor);
+		queryParams.put(CURSOR, cursor);
+		queryParams.put(AMT, amt);
 		var uri = Constants.ENDPOINT_LIST_ITEMS_PAGINATED + StringUtils.getEncodedQueryString(queryParams);
 		return this.request.get(uri, ItemBulk.class);
 	}
@@ -348,10 +352,10 @@ public class XMindClientImpl implements XMindClient {
 	}
 
 	@LoginRequired
-	public UserRatingPage listUserRatings(Object userId, int page, int amt) throws XMindException {
+	public UserRatingPage listUserRatings(Object userId, Integer page, Integer amt) throws XMindException {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
-		queryParams.put("amt", amt);
+		queryParams.put(AMT, amt);
 		return this.request.get(String.format(Constants.ENDPOINT_LIST_ALL_RATINGS_OF_USER, userId) + 
 				StringUtils.getEncodedQueryString(queryParams), UserRatingPage.class);
 	}
@@ -362,7 +366,7 @@ public class XMindClientImpl implements XMindClient {
 			chunkSize = 1000; // default value
 		for (List<UserRating> ratingsChunk : ListUtils.partition(ratings, chunkSize))
 			this.request.put(String.format(Constants.ENDPOINT_CREATE_UPDATE_RATINGS_ONE_USER_BULK, userId), 
-					Map.of("ratings", ratingsChunk), Base.class);
+					Map.of(RATINGS, ratingsChunk), Base.class);
 	}
 
 	@LoginRequired
@@ -370,14 +374,14 @@ public class XMindClientImpl implements XMindClient {
 		if(chunkSize == null)
 			chunkSize = 4096; // default value
 		for (List<UserRating> userRatingsChunk : ListUtils.partition(userRatings, chunkSize))
-			this.request.put(Constants.ENDPOINT_CREATE_UPDATE_RATINGS_MANY_USERS_BULK, Map.of("ratings", userRatingsChunk), Base.class);
+			this.request.put(Constants.ENDPOINT_CREATE_UPDATE_RATINGS_MANY_USERS_BULK, Map.of(RATINGS, userRatingsChunk), Base.class);
 	}
 
 	@LoginRequired
-	public UserRatingBulk listRatings(int amt, String cursor) throws XMindException {
+	public UserRatingBulk listRatings(Integer amt, String cursor) throws XMindException {
 		Map<String, Object> queryParams = new HashMap<>();
-		queryParams.put("amt", amt);
-		queryParams.put("cursor", cursor);
+		queryParams.put(CURSOR, cursor);
+		queryParams.put(AMT, amt);
 		var uri = Constants.ENDPOINT_LIST_RATINGS_ALL_USERS_BULK + StringUtils.getEncodedQueryString(queryParams);
 		return this.request.get(uri, UserRatingBulk.class);
 	}
@@ -386,11 +390,9 @@ public class XMindClientImpl implements XMindClient {
 	public Recommendation getRecommendationsItemToItems(Object itemId, Integer amt, String cursor, List<Filter> filters)
 			throws XMindException {
 		Map<String, Object> queryParams = new HashMap<>();
-		if(cursor != null)
-			queryParams.put("cursor", cursor);
-		if(amt != null)
-			queryParams.put("amt", amt);
-		queryParams.put("filters", filters);
+		queryParams.put(CURSOR, cursor);
+		queryParams.put(AMT, amt);
+		queryParams.put(FILTERS, filters);
 		var uri = String.format(Constants.ENDPOINT_GET_SIMILAR_ITEMS_RECOMMENDATIONS, itemId) + StringUtils.getEncodedQueryString(queryParams);
 		return this.request.get(uri, Recommendation.class);
 	}
@@ -398,14 +400,14 @@ public class XMindClientImpl implements XMindClient {
 	@LoginRequired
 	public Recommendation getRecommendationsSessionToItems(List<UserRating> ratings, User userProperties, Integer amt,
 			String cursor, List<Filter> filters, boolean excludeRatedItems) throws XMindException {
-		Map<String, Object> bodyParams = new HashMap<String, Object>();
-		bodyParams.put("ratings", ratings);
+		Map<String, Object> bodyParams = new HashMap<>();
+		bodyParams.put(RATINGS, ratings);
 		bodyParams.put("user_properties", userProperties);
 		if(cursor != null)
-			bodyParams.put("cursor", cursor);
+			bodyParams.put(CURSOR, cursor);
 		if(amt != null)
-			bodyParams.put("amt", amt);
-		bodyParams.put("filters", filters);
+			bodyParams.put(AMT, amt);
+		bodyParams.put(FILTERS, filters);
 		bodyParams.put("exclude_rated_items", true);
 		var uri = Constants.ENDPOINT_GET_SESSION_ITEMS_RECOMMENDATIONS;
 		return this.request.post(uri, bodyParams, Recommendation.class);
@@ -415,11 +417,9 @@ public class XMindClientImpl implements XMindClient {
 	public Recommendation getRecommendationsUserToItems(Object userId, Integer amt, String cursor, List<Filter> filters,
 			boolean excludeRatedItems) throws XMindException {
 		Map<String, Object> queryParams = new HashMap<>();
-		if(cursor != null)
-			queryParams.put("cursor", cursor);
-		if(amt != null)
-			queryParams.put("amt", amt);
-		queryParams.put("filters", filters);
+		queryParams.put(CURSOR, cursor);
+		queryParams.put(AMT, amt);
+		queryParams.put(FILTERS, filters);
 		queryParams.put("exclude_rated_items", true);
 		var uri = String.format(Constants.ENDPOINT_GET_PROFILE_ITEMS_RECOMMENDATIONS, userId) + StringUtils.getEncodedQueryString(queryParams);
 		return this.request.get(uri, Recommendation.class);

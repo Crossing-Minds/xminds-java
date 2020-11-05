@@ -1,7 +1,5 @@
 package com.crossingminds.api.model;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -19,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({ "email", "password" })
-public class RootAccount extends Base implements Serializable {
+public class RootAccount extends Base {
 
 	@JsonProperty("email")
 	private String email;

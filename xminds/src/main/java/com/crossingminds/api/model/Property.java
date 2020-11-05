@@ -1,7 +1,5 @@
 package com.crossingminds.api.model;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -19,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({ "property_name", "value_type", "repeated" })
-public class Property extends Base implements Serializable {
+public class Property extends Base {
 
 	@JsonProperty("property_name")
 	public String propertyName;
@@ -27,6 +25,6 @@ public class Property extends Base implements Serializable {
 	public String valueType;
 	@JsonProperty("repeated")
 	public boolean repeated;
-	private final static long serialVersionUID = -3837092897825646247L;
+	private static final long serialVersionUID = -3837092897825646247L;
 
 }

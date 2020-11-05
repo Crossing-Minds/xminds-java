@@ -25,6 +25,6 @@ public class ItemList implements Serializable {
 
 	private static final long serialVersionUID = 3825982900617432861L;
 	@JsonProperty("items")
-	public List<Item> items;
+	private List<Item> items;
 
 }

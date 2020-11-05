@@ -1,5 +1,7 @@
 package com.crossingminds.api.utils;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,6 +26,31 @@ public class StringUtils {
 				.collect(Collectors.toList());
 		var urlParams = URLEncodedUtils.format(nameValuePairs, Consts.UTF_8);
 		return !TextUtils.isEmpty(urlParams) ? "?" + urlParams : "";
+	}
+
+	@SuppressWarnings("unchecked")
+	/**
+	 * Should be used only with non-primitive type for parameter
+	 * (eg an array like int[] is not applicable because 
+	 * autoboxing to Object[] is not possible, instead use Integer[])
+	 * 
+	 * @param content
+	 * @return Object that contains a value of comma separated strings
+	 */
+	public static Object getCommaSeparatedValue(Object value) {
+		String result = null;
+		if (value instanceof List) { // If value is a List
+			result = ((Collection<Object>) value).stream()
+				      .map(String::valueOf)
+				      .collect(Collectors.joining(","));
+		} else if (value.getClass().isArray()) { // If value is an Array
+			result = Arrays.stream((Object[]) value)
+	                 .map(String::valueOf)
+	                 .collect(Collectors.joining(","));
+		} else { // If value is not a List or an Array
+			return value;
+		}
+		return result;
 	}
 
 }

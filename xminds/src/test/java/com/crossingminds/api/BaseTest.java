@@ -2,19 +2,30 @@ package com.crossingminds.api;
 
 import static org.hamcrest.Matchers.containsString;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.platform.commons.annotation.Testable;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
+import com.crossingminds.api.exception.XMindException;
 import com.crossingminds.api.model.Database;
 import com.crossingminds.api.model.IndividualAccount;
 import com.crossingminds.api.model.RootAccount;
 import com.crossingminds.api.model.ServiceAccount;
+import com.crossingminds.api.utils.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pgssoft.httpclient.HttpClientMock;
 import com.pgssoft.httpclient.internal.HttpMethods;
 
+@Testable
+@TestInstance(Lifecycle.PER_CLASS)
 class BaseTest {
 
 	// Package attributes
@@ -30,7 +41,7 @@ class BaseTest {
 	RootAccount rootAccount = RootAccount.builder().email("email_test@my_app.com").password("MyP433w0rD").build();
 	Database database = Database.builder().name("Example Test DB name")
 			.description("Example Test DB longer description").userIdType("uint32").itemIdType("uuid").build();
-	
+
 	// Package methods
 	void setUpHttpClientMock(String method, String path, String respMock, String queryParams, String bodyParam) {
 		switch (method) {
@@ -78,8 +89,8 @@ class BaseTest {
 		client = XMindClientImpl.XMindFactory.getClient(httpClientMock, host + "/");
 	}
 
-	// Package methods
-	void setUpHttpClientMockException(String method, String path, String respMock, String queryParams, String bodyParam) {
+	void setUpHttpClientMockException(String method, String path, String respMock, String queryParams,
+			String bodyParam) {
 		switch (method) {
 		case HttpMethods.GET:
 			httpClientMock.onGet().withPath(path).doReturnJSON(respMock).withStatus(401);
@@ -88,7 +99,7 @@ class BaseTest {
 		client = XMindClientImpl.XMindFactory.getClient(httpClientMock, host + "/");
 	}
 
-	public void verifyJSONResponse(String expected, Object received) {
+	void verifyJSONResponse(String expected, Object received) {
 		try {
 			Assertions.assertNotNull(received);
 			JSONAssert.assertEquals(expected, this.toStringJson(received), JSONCompareMode.STRICT);
@@ -104,5 +115,25 @@ class BaseTest {
 			throw new IllegalArgumentException(e);
 		}
 	}
-	
+
+	@Test
+	final void testGetEncodedQueryString() throws XMindException {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("cursor", "Q21vU1pHb1FjSEp...");
+		queryParams.put("amt", 100);
+
+		// Verify that all values are included in queryString
+		Assertions.assertEquals("?cursor=Q21vU1pHb1FjSEp...&amt=100", StringUtils.getEncodedQueryString(queryParams));
+
+		// Replace the cursor value with a null value
+		queryParams.put("cursor", null);
+		// Verify that null values are excluded in queryString
+		Assertions.assertEquals("?amt=100", StringUtils.getEncodedQueryString(queryParams));
+
+		// Replace the amt value with a null value (all values are null)
+		queryParams.put("amt", null);
+		// Verify that all values are excluded in queryString
+		Assertions.assertEquals("", StringUtils.getEncodedQueryString(queryParams));
+	}
+
 }

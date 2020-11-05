@@ -2,6 +2,7 @@ package com.crossingminds.api.model;
 
 import java.io.Serializable;
 
+import com.crossingminds.api.utils.StringUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -26,12 +27,12 @@ public class Filter implements Serializable {
 	@JsonProperty("op")
 	private String op;
 	@JsonProperty("value")
-	private Object value;
+	private transient Object value;
 	private static final long serialVersionUID = -2995454381086489606L;
 
 	public String toString() {
-		return (this.propertyName + ":" + this.op + (this.value != null ? ":" + this.value : "")).replace("[", "")
-				.replace("]", "").replace(", ", ",");
+		return this.propertyName + ":" + this.op + 
+				(this.value != null ? ":" + StringUtils.getCommaSeparatedValue(this.value) : "");
 	}
 
 }

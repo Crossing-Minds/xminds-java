@@ -22,6 +22,6 @@ public class ItemMap implements Serializable {
 
 	private static final long serialVersionUID = 3825982900617432861L;
 	@JsonProperty("item")
-	public Item item;
+	private Item item;
 
 }
