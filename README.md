@@ -24,16 +24,8 @@ mvn clean install
 To run tests, execute the command:
 
 ```shell
-mvn clean test -DrootEmail=<ROOT_EMAIL> -DrootPass=<ROOT_PASSWORD> -DstagingHost=<STAGING_HOST>
+mvn clean test
 ```
-
-To achieve the success of the tests it is necessary to provide data from an existing user on the platform.
-
-<ROOT_EMAIL> e.g. user@mail.com
-
-<ROOT_PASSWORD> e.g.: P@ssw@rd
-
-<STAGING_HOST> e.g. https://staging-api.crossingminds.com/
 
 ## Design considerations
 
@@ -48,11 +40,15 @@ To comply with the Jackson standard it is necessary to generate model classes (P
 ```java
 // Database class to map Database entity
 
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({ "id", "organization_id", "name", "description", "item_id_type", "user_id_type" })
-public class Database extends Base implements Serializable {
+@JsonPropertyOrder({ "id", "organization_id", "name", "description", "item_id_type", "user_id_type", "counters" })
+public class Database extends Base {
 
-	private static final long serialVersionUID = 1261106258660845138L;
 	@JsonProperty("id")
 	private String id;
 	@JsonProperty("organization_id")
@@ -65,25 +61,37 @@ public class Database extends Base implements Serializable {
 	private String itemIdType;
 	@JsonProperty("user_id_type")
 	private String userIdType;
-
+	@JsonProperty("counters")
+	private Counters counters;
+	private static final long serialVersionUID = 1261106258660845138L;
 
 // Note that Database class extends of Base class containing the feature to map any XMinds error and additional properties 
 
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({ "error" })
 public class Base implements Serializable {
 
-	private static final long serialVersionUID = 6984020505060503600L;
 	@JsonUnwrapped
+	@JsonProperty("error")
+	@JsonIgnore
 	private BaseError error;
+	@Builder.Default
 	@JsonIgnore
 	protected transient Map<String, Object> additionalProperties = new HashMap<>();
+	private static final long serialVersionUID = 6984020505060503600L;
+
 ```
+Also [@Lombok](https://projectlombok.org/) is used to simplify the POJO construction.
+
 
 #### Example of automatic mapping 
 
 ```java
-
 // JSON to Java object
 public T jsonToObject(String jsonContent, Class<T> clazz) {
 	try {
@@ -103,33 +111,25 @@ public String objectToJson(Object obj) {
 }
 ```
 
-To ensure the use of an automatic refresh token, the Decorator design pattern is implemented adding the ability to obtain a new token from the refresh token stored in memory.
+To ensure the use of an automatic refresh token, the Decorator design pattern is implemented (through reflection) adding the ability to obtain a new token from the refresh token stored in memory.
 
-#### Example of decorated method 
+#### Example of implementation
 
 ```java
-// The simple method implementation
-public Organization listAllAccounts() throws XmindsException {
-	try {
-		var jsonStr = this.request.get(getURI(Constants.ENDPOINT_LIST_ALL_ACCOUNTS));
-		return (Organization) Parser.parseResponse(organizationMapper.jsonToObject(jsonStr, Organization.class));
-	} catch (IOException | InterruptedException ex) {
-		throw new ServerException(ex, Constants.UNKNOWN_ERROR_MSG, "0", "500", 0);
-	}
-}
-
-// The decorated method implementation
-public Organization listAllAccounts() throws XmindsException {
-	try {
-        // Try to execute the method
-		return endpoint.listAllAccounts();
-	} catch (JwtTokenExpiredException ex) {
-        // If a JwtTokenExpiredException ocurred
-        // a new token is obtained from refresh token
-		endpoint.loginRefreshToken();
-        // Then execute method with a valid jwt token
-		return endpoint.listAllAccounts();
-	}
-}
+@LoginRequired
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+			try {
+				return method.invoke(xmindClient, args);
+			} catch (InvocationTargetException e) {
+				try {
+					throw e.getTargetException();
+				} catch (JwtTokenExpiredException ex) {
+					if (!this.hasLoginRequired(method))
+						throw ex;
+					xmindClient.loginRefreshToken();
+					return method.invoke(xmindClient, args);
+				}
+			}
+		}
 
 ```
