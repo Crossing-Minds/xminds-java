@@ -111,25 +111,28 @@ public String objectToJson(Object obj) {
 }
 ```
 
+## Authentication
+
 To ensure the use of an automatic refresh token, the Decorator design pattern is implemented (through reflection) adding the ability to obtain a new token from the refresh token stored in memory.
 
 #### Example of implementation
 
 ```java
 @LoginRequired
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			try {
-				return method.invoke(xmindClient, args);
-			} catch (InvocationTargetException e) {
-				try {
-					throw e.getTargetException();
-				} catch (JwtTokenExpiredException ex) {
-					if (!this.hasLoginRequired(method))
-						throw ex;
-					xmindClient.loginRefreshToken();
-					return method.invoke(xmindClient, args);
-				}
-			}
+public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+	try {
+		return method.invoke(xmindClient, args);
+	} catch (InvocationTargetException e) {
+		try {
+			throw e.getTargetException();
+		} catch (JwtTokenExpiredException ex) {
+			if (!this.hasLoginRequired(method))
+				throw ex;
+			xmindClient.loginRefreshToken();
+			return method.invoke(xmindClient, args);
 		}
+	}
+}
 
 ```
+All methods annotated with @LoginRequired are intercepted and then invoked through this flow to ensure authentication using the refresh token.
