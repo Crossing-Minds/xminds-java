@@ -1,5 +1,6 @@
 package com.crossingminds.api;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.crossingminds.api.exception.AuthenticationException;
@@ -16,6 +17,7 @@ import com.crossingminds.api.model.RootAccount;
 import com.crossingminds.api.model.ServiceAccount;
 import com.crossingminds.api.model.Token;
 import com.crossingminds.api.model.User;
+import com.crossingminds.api.model.UserInteraction;
 import com.crossingminds.api.model.UserRating;
 import com.crossingminds.api.response.AccountList;
 import com.crossingminds.api.response.DatabasePage;
@@ -27,7 +29,7 @@ import com.crossingminds.api.response.UserBulk;
 import com.crossingminds.api.response.UserRatingBulk;
 import com.crossingminds.api.response.UserRatingPage;
 
-public interface XMindClient {
+public interface XMindClient extends Serializable {
 
 	/**
 	 * Retrieve all the accounts that belong to the organization of the token.
@@ -349,9 +351,7 @@ public interface XMindClient {
 	 * (userId, item_id) then it is updated, otherwise it is created. 
 	 * 
 	 * @param userId
-	 * @param itemId
 	 * @param rating
-	 * @param timestamp
 	 * @throws XMindException
 	 */
 	void createOrUpdateRating(Object userId, UserRating rating) throws XMindException;
@@ -445,5 +445,23 @@ public interface XMindClient {
 	 * @throws XMindException
 	 */
 	Recommendation getRecommendationsUserToItems(Object userId, Integer amt, String cursor, List<Filter> filters, boolean excludeRatedItems) throws XMindException;
+
+	/**
+	 * Create a new interaction for a user and an item.
+	 * An inferred rating will be created or updated for the tuple (user_id, item_id).
+	 * 
+	 * @param interaction
+	 * @throws XMindException
+	 */
+	void createInteraction(UserInteraction interaction) throws XMindException;
+
+	/**
+	 * Create or update large bulks of interactions for many users and many items.
+	 * Inferred ratings will be created or updated for all tuples (user_id, item_id)
+	 * 
+	 * @param userInteractions - UserInteraction List
+	 * @throws XMindException
+	 */
+	void createInteractionsBulk(List<UserInteraction> userInteractions, Integer chunkSize) throws XMindException;
 
 }

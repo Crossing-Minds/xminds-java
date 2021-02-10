@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({ "id", "organization_id", "name", "description", "item_id_type", "user_id_type", "counters" })
+@JsonPropertyOrder({ "id", "organization_id", "name", "description", "item_id_type", "user_id_type", "counters", "status" })
 public class Database extends Base {
 
 	@JsonProperty("id")
@@ -33,6 +33,8 @@ public class Database extends Base {
 	private String userIdType;
 	@JsonProperty("counters")
 	private Counters counters;
+	@JsonProperty("status")
+	private String status;
 	private static final long serialVersionUID = 1261106258660845138L;
 
 }

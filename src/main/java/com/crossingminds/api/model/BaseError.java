@@ -33,7 +33,7 @@ public class BaseError implements Serializable {
 	@JsonProperty("message")
 	private String message;
 	@JsonProperty("error_data")
-	private ErrorData errorData;
+	private Map<String, Object> errorData;
 	@Builder.Default
 	@JsonIgnore
 	protected transient Map<String, Object> additionalProperties = new HashMap<>();

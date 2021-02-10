@@ -24,6 +24,7 @@ import com.crossingminds.api.model.RootAccount;
 import com.crossingminds.api.model.ServiceAccount;
 import com.crossingminds.api.model.Token;
 import com.crossingminds.api.model.User;
+import com.crossingminds.api.model.UserInteraction;
 import com.crossingminds.api.model.UserRating;
 import com.crossingminds.api.response.AccountList;
 import com.crossingminds.api.response.DatabasePage;
@@ -51,10 +52,16 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class XMindClientImpl implements XMindClient {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3509868835866839052L;
 	private static final String AMT = "amt";
 	private static final String RATINGS = "ratings";
 	private static final String FILTERS = "filters";
 	private static final String CURSOR = "cursor";
+	private static final String INTERACTIONS = "interactions";
+
 	/*
 	 * Not accessible to final client
 	 */
@@ -62,6 +69,11 @@ public class XMindClientImpl implements XMindClient {
 
 	private XMindClientImpl(HttpClient httpClient, String host) {
 		this.request = new Request(httpClient, host);
+	}
+
+	private XMindClientImpl(HttpClient httpClient, String host, ServiceAccount serviceAccount) throws XMindException {
+		this.request = new Request(httpClient, host);
+		this.loginService(serviceAccount);
 	}
 
 	/**
@@ -98,25 +110,69 @@ public class XMindClientImpl implements XMindClient {
 			}
 		}
 
-		// Public constructor (Default)
+		/**
+		 *  Default constructor
+		 *  
+		 * @return XMindClient - client instance
+		 */
 		public static XMindClient getClient() {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
 					new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), "")));
 		}
 
-		// Protected constructor (Development/Test)
-		protected static XMindClient getClient(String host) {
+		/**
+		 * Default and login as service constructor
+		 * Returns a new client instance logged as Service given a service account 
+		 * 
+		 * @param host
+		 * @param serviceAccount
+		 * @return XMindClient - client instance
+		 * @throws XMindException
+		 */
+		public static XMindClient getClient(ServiceAccount serviceAccount) throws XMindException {
+			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
+					new Class<?>[] { XMindClient.class },
+					new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), "", serviceAccount)));
+		}
+
+		/**
+		 * Custom environment constructor
+		 * 
+		 * @param host - the custom host
+		 * @return XMindClient - client instance
+		 */
+		public static XMindClient getClient(String host) {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
 					new Class<?>[] { XMindClient.class },
 					new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), host)));
 		}
 
-		// Protected constructor (Mock/Test)
-		protected static XMindClient getClient(HttpClient httpClient, String host) {
+		/**
+		 * Custom environment and login as service constructor
+		 * Returns a new client instance logged as Service given a service account 
+		 * 
+		 * @param host
+		 * @param serviceAccount
+		 * @return XMindClient - client instance
+		 * @throws XMindException
+		 */
+		public static XMindClient getClient(String host, ServiceAccount serviceAccount) throws XMindException {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
-					new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(httpClient, host)));
+					new Class<?>[] { XMindClient.class },
+					new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), host, serviceAccount)));
 		}
 
+		/**
+		 * Mocking constructor given a HttpClient mock
+		 * 
+		 * @param httpClient
+		 * @param host
+		 * @return XMindClient - client instance
+		 */
+		public static XMindClient getClient(HttpClient httpClient, String host) {
+			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
+				new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(httpClient, host)));
+		}
 	}
 
 	@LoginRequired
@@ -423,6 +479,22 @@ public class XMindClientImpl implements XMindClient {
 		queryParams.put("exclude_rated_items", true);
 		var uri = String.format(Constants.ENDPOINT_GET_PROFILE_ITEMS_RECOMMENDATIONS, userId) + StringUtils.getEncodedQueryString(queryParams);
 		return this.request.get(uri, Recommendation.class);
+	}
+
+	@Override
+	public void createInteraction(UserInteraction interaction) throws XMindException {
+		this.request.post(String.format(Constants.ENDPOINT_CREATE_ONE_INTERACTION, interaction.getUserId(), interaction.getItemId()), 
+				interaction, Base.class);
+	}
+
+	@Override
+	public void createInteractionsBulk(List<UserInteraction> userInteractions, Integer chunkSize)
+			throws XMindException {
+		if (chunkSize == null)
+			chunkSize = 4096; // default value
+		for (List<UserInteraction> interactionsChunk : ListUtils.partition(userInteractions, chunkSize))
+			this.request.post(Constants.ENDPOINT_CREATE_INTERACTIONS_MANY_USERS_BULK, Map.of(INTERACTIONS, interactionsChunk), Base.class);
+
 	}
 
 }

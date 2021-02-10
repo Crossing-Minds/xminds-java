@@ -1,5 +1,8 @@
 package com.crossingminds.api.utils;
 
+import java.io.IOException;
+import java.util.Properties;
+
 public class Constants {
 
 	/**
@@ -8,6 +11,16 @@ public class Constants {
 	public static final String API_URL = "https://api.crossingminds.com/";
 
 	private Constants() {
+	}
+
+	static {
+		try {
+			Properties prop = new Properties();
+			prop.load(Constants.class.getResourceAsStream("/version.properties"));
+			clientVersion = prop.getProperty("version");
+		} catch (IOException e) {
+			clientVersion = "";
+		}
 	}
 
 	/*
@@ -87,7 +100,10 @@ public class Constants {
 	public static final String ENDPOINT_GET_SIMILAR_ITEMS_RECOMMENDATIONS = "recommendation/items/%s/items/";
 	public static final String ENDPOINT_GET_SESSION_ITEMS_RECOMMENDATIONS = "recommendation/sessions/items/";
 	public static final String ENDPOINT_GET_PROFILE_ITEMS_RECOMMENDATIONS = "recommendation/users/%s/items/";
-	
+	// Interactions
+	public static final String ENDPOINT_CREATE_ONE_INTERACTION = "users/%s/interactions/%s/";
+	public static final String ENDPOINT_CREATE_INTERACTIONS_MANY_USERS_BULK = "interactions-bulk/";
+
 	/**
 	 * Related to literals
 	 */

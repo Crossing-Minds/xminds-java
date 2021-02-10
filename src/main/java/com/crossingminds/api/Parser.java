@@ -34,10 +34,10 @@ public class Parser {
 		if (baseError != null) {
 			String errorName = baseError.getErrorName();
 			Errors errorDetails = Errors.valueOf(errorName.toUpperCase());
-			var error = baseError.getErrorData().getError() != null ? baseError.getErrorData().getError() : "";
-			var type = baseError.getErrorData().getType() != null ? baseError.getErrorData().getType() : "";
-			var key = baseError.getErrorData().getKey() != null ? baseError.getErrorData().getKey() : "";
-			var method = baseError.getErrorData().getMethod() != null ? baseError.getErrorData().getMethod() : "";
+			var error = baseError.getErrorData().get("error") != null ? (String) baseError.getErrorData().get("error") : "";
+			var type = baseError.getErrorData().get("type") != null ? (String) baseError.getErrorData().get("type") : "";
+			var key = baseError.getErrorData().get("key") != null ? (String) baseError.getErrorData().get("key") : "";
+			var method = baseError.getErrorData().get("method") != null ? (String) baseError.getErrorData().get("method") : "";
 			switch (errorName) {
 			case "ServerUnavailable":
 				throw new ServerUnavailableException(errorDetails.getMsg(), errorDetails.getCode(),
