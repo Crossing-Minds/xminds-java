@@ -481,13 +481,13 @@ public class XMindClientImpl implements XMindClient {
 		return this.request.get(uri, Recommendation.class);
 	}
 
-	@Override
+	@LoginRequired
 	public void createInteraction(UserInteraction interaction) throws XMindException {
 		this.request.post(String.format(Constants.ENDPOINT_CREATE_ONE_INTERACTION, interaction.getUserId(), interaction.getItemId()), 
 				interaction, Base.class);
 	}
 
-	@Override
+	@LoginRequired
 	public void createInteractionsBulk(List<UserInteraction> userInteractions, Integer chunkSize)
 			throws XMindException {
 		if (chunkSize == null)
