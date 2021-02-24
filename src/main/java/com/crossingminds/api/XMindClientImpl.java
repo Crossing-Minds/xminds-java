@@ -226,6 +226,9 @@ public class XMindClientImpl implements XMindClient {
 		token.setRefreshToken(this.request.getRefreshToken());
 		var response = this.request.post(Constants.ENDPOINT_RENEW_LOGIN_REFRESH_TOKEN, token, Token.class);
 		this.request.setToken(response.getJwtToken());
+		if (response.getRefreshToken() != null) {
+			this.request.setRefreshToken(response.getRefreshToken());
+		}
 		return response;
 	}
 
