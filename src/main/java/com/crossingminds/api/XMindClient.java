@@ -246,11 +246,12 @@ public interface XMindClient extends Serializable {
 	/**
 	 * Create many users in bulk, or update the ones for which the user_id already exist.
 	 *
-	 * @param users values
-	 * @param chunkSize to split the requests in chunks of this size (default: 1K)
+	 * @param users - the users to be created/updated
+	 * @param chunkSize - to split the requests in chunks of this size (default: 1K)
+	 * @param waitForCompletion - to use the default value set this as null
 	 * @throws XMindException
 	 */
-	void createOrUpdateUsersBulk(List<User> users, Integer chunkSize) throws XMindException;
+	void createOrUpdateUsersBulk(List<User> users, Integer chunkSize, Boolean waitForCompletion) throws XMindException;
 
 	/**
 	 * Get multiple users by page.
@@ -322,10 +323,12 @@ public interface XMindClient extends Serializable {
 	/**
 	 * Create many items in bulk, or update the ones for which the item_id already exist.
 	 *
-	 * @param items
+	 * @param items - the items to create/update
+	 * @param chunkSize - default=1000
+	 * @param waitForCompletion - to use the default value set this as null
 	 * @throws XMindException
 	 */
-	void createOrUpdateItemsBulk(List<Item> items, Integer chunkSize) throws XMindException;
+	void createOrUpdateItemsBulk(List<Item> items, Integer chunkSize, Boolean waitForCompletion) throws XMindException;
 
 	/**
 	 * Get multiple items by page.

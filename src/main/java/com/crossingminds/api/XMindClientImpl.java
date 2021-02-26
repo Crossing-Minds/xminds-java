@@ -314,11 +314,19 @@ public class XMindClientImpl implements XMindClient {
 	}
 
 	@LoginRequired
-	public void createOrUpdateUsersBulk(List<User> users, Integer chunkSize) throws XMindException {
+	public void createOrUpdateUsersBulk(List<User> users, Integer chunkSize, Boolean waitForCompletion) throws XMindException {
 		if(chunkSize == null)
 			chunkSize = 1000; // default value
-		for (List<User> usersChunk : ListUtils.partition(users, chunkSize))
-			this.request.put(Constants.ENDPOINT_CREATE_UPDATE_USERS_BULK, Map.of("users", usersChunk), Base.class);                
+		for (List<User> usersChunk : ListUtils.partition(users, chunkSize)) {
+			if(waitForCompletion != null) {
+				Map<String, Object> bodyParams = new HashMap<>();
+				bodyParams.put("users", usersChunk);
+				bodyParams.put("wait_for_completion", waitForCompletion);
+				this.request.put(Constants.ENDPOINT_CREATE_UPDATE_USERS_BULK, bodyParams, Base.class);
+			} else {
+				this.request.put(Constants.ENDPOINT_CREATE_UPDATE_USERS_BULK, Map.of("users", usersChunk), Base.class);
+			}
+		}
 	}
 
 	@LoginRequired
@@ -376,11 +384,19 @@ public class XMindClientImpl implements XMindClient {
 	}
 
 	@LoginRequired
-	public void createOrUpdateItemsBulk(List<Item> items, Integer chunkSize) throws XMindException {
+	public void createOrUpdateItemsBulk(List<Item> items, Integer chunkSize, Boolean waitForCompletion) throws XMindException {
 		if(chunkSize == null)
 			chunkSize = 1000; // default value
-		for (List<Item> itemsChunk : ListUtils.partition(items, chunkSize))
-			this.request.put(Constants.ENDPOINT_CREATE_UPDATE_ITEMS_BULK, Map.of("items", itemsChunk), Base.class);
+		for (List<Item> itemsChunk : ListUtils.partition(items, chunkSize)) {
+			if(waitForCompletion != null) {
+				Map<String, Object> bodyParams = new HashMap<>();
+				bodyParams.put("items", itemsChunk);
+				bodyParams.put("wait_for_completion", waitForCompletion);
+				this.request.put(Constants.ENDPOINT_CREATE_UPDATE_ITEMS_BULK, bodyParams, Base.class);
+			} else {
+				this.request.put(Constants.ENDPOINT_CREATE_UPDATE_ITEMS_BULK, Map.of("items", itemsChunk), Base.class);
+			}
+		}
 	}
 
 	@LoginRequired

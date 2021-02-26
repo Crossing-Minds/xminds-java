@@ -139,7 +139,7 @@ class ItemTest extends BaseTest {
 		var respMock = "";
 		// call Endpoint
 		setUpHttpClientMock(HttpMethods.PUT, path, respMock, "", "");
-		client.createOrUpdateItemsBulk(getItemsBulk(), 1000);
+		client.createOrUpdateItemsBulk(getItemsBulk(), 1000, false);
 		// check test
 		httpClientMock.verify().put(path).called();
 	}
@@ -225,7 +225,7 @@ class ItemTest extends BaseTest {
 		itemB.setItemId("c3391d83-553b-40e7-818e-fcf658ec397d");
 		itemB.put("tags", Arrays.asList("family"));
 		itemB.put("genres", Arrays.asList("thriller"));
-		itemA.put("price", 4.49f);
+		itemB.put("price", 4.49f);
 		items.add(itemB);
 		return items;
 	}

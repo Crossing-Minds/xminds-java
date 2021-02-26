@@ -133,7 +133,7 @@ class UserTest extends BaseTest {
 		var respMock = "";
 		// call Endpoint
 		setUpHttpClientMock(HttpMethods.PUT, path, respMock, "", "");
-		client.createOrUpdateUsersBulk(getUsersBulk(), null);
+		client.createOrUpdateUsersBulk(getUsersBulk(), null, false);
 		// check test
 		httpClientMock.verify().put(path).called();
 	}
