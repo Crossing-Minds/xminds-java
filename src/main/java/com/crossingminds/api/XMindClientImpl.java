@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
 import com.crossingminds.api.exception.JwtTokenExpiredException;
@@ -90,8 +91,10 @@ public class XMindClientImpl implements XMindClient {
 		}
 
 		private boolean hasLoginRequired(Method method) {
-			return (null != method.getAnnotation(LoginRequired.class)) || (null != MethodUtils
-					.getMatchingMethod(xmindClient.getClass(), method.getName()).getAnnotation(LoginRequired.class));
+			return (null != method.getAnnotation(LoginRequired.class))
+					|| (null != MethodUtils.getMatchingMethod(xmindClient.getClass(), method.getName(),
+									ArrayUtils.nullToEmpty(method.getParameterTypes()))
+							.getAnnotation(LoginRequired.class));
 		}
 
 		@LoginRequired
