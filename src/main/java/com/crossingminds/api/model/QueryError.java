@@ -3,6 +3,7 @@ package com.crossingminds.api.model;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -20,6 +21,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonPropertyOrder({ "user", "user_id", "non_field_errors" })
+@JsonIgnoreProperties(ignoreUnknown = true)
 class QueryError implements Serializable {
 
 	@JsonProperty("user")

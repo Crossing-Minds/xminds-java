@@ -6,7 +6,7 @@ stages:
 # On all branches, run unit tests
 unit test:
   stage: tests
-  image: maven:3.6.3
+  image: maven:3.6.3-openjdk-15
   script:
     - mvn clean test
   tags:

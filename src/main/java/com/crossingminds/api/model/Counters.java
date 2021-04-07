@@ -2,6 +2,7 @@ package com.crossingminds.api.model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -21,6 +22,7 @@ import lombok.Setter;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "rating", "user", "item" })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Counters implements Serializable {
 
 	@JsonProperty("rating")
