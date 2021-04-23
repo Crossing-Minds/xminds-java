@@ -79,7 +79,7 @@ public class Parser {
 						errorDetails.getCode(), errorDetails.getHttpStatus(), 0);
 			}
 		} else {
-			throw new ServerException(null, Constants.UNKNOWN_ERROR_MSG, "0", "500", 0);
+			throw new ServerException(null, Constants.UNKNOWN_ERROR_MSG, "0", 500, 0);
 		}
 	}
 

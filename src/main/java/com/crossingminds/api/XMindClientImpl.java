@@ -103,7 +103,7 @@ public class XMindClientImpl implements XMindClient {
 				return method.invoke(xmindClient, args);
 			} catch (InvocationTargetException e) {
 				try {
-					throw e.getTargetException();
+					throw e.getTargetException().getCause();
 				} catch (JwtTokenExpiredException ex) {
 					if (!this.hasLoginRequired(method))
 						throw ex;

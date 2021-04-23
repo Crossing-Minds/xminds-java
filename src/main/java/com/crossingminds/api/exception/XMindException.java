@@ -1,6 +1,8 @@
 package com.crossingminds.api.exception;
 
-public class XMindException extends Exception {
+import java.io.IOException;
+
+public class XMindException extends IOException {
 
 	/**
 	 * 
@@ -8,14 +10,14 @@ public class XMindException extends Exception {
 	private static final long serialVersionUID = -3101052380589088883L;
 	private final String msg;
 	private final String code;
-	private final String httpStatus;
+	private final int httpStatus;
 	private final int retryAfter;
 
 	public XMindException() {
 		super();
 		this.msg="";
 		this.code="";
-		this.httpStatus="";
+		this.httpStatus=0;
 		this.retryAfter=0;
 	}
 
@@ -23,11 +25,11 @@ public class XMindException extends Exception {
 		super(message, throwable);
 		this.msg="";
 		this.code="";
-		this.httpStatus="";
+		this.httpStatus=0;
 		this.retryAfter=0;
 	}
 
-	public XMindException(String msg, String code, String httpStatus, int retryAfter) {
+	public XMindException(String msg, String code, int httpStatus, int retryAfter) {
 		super(msg);
 		this.msg = msg;
 		this.code = code;
@@ -35,7 +37,7 @@ public class XMindException extends Exception {
 		this.retryAfter = retryAfter;
 	}
 
-	public XMindException(Throwable throwable, String msg, String code, String httpStatus, int retryAfter) {
+	public XMindException(Throwable throwable, String msg, String code, int httpStatus, int retryAfter) {
 		super(msg, throwable);
 		this.msg = msg;
 		this.code = code;
@@ -51,7 +53,7 @@ public class XMindException extends Exception {
 		return code;
 	}
 
-	public String getHttpStatus() {
+	public int getHttpStatus() {
 		return httpStatus;
 	}
 

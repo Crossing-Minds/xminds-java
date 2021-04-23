@@ -114,10 +114,10 @@ public class Request {
 			var response = this.httpClient.send(request, BodyHandlers.ofString());
 			return checkStatusCode(response, valueType);
 		} catch (IOException e) {
-			throw new ServerException(e, Constants.UNKNOWN_ERROR_MSG, "0", "500", 0);
+			throw new ServerException(e, Constants.UNKNOWN_ERROR_MSG, "0", 500, 0);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			throw new ServerException(e, Constants.UNKNOWN_ERROR_MSG, "0", "500", 0);
+			throw new ServerException(e, Constants.UNKNOWN_ERROR_MSG, "0", 500, 0);
 		}
 	}
 
@@ -133,7 +133,7 @@ public class Request {
 
 	private <T> T checkStatusCode(HttpResponse<String> response, Class<T> valueType) throws XMindException, JsonProcessingException {
 		if (response.statusCode() >= 500) {
-			throw new ServerException(Constants.UNKNOWN_ERROR_MSG, "0", response.statusCode() + "", 0);
+			throw new ServerException(Constants.UNKNOWN_ERROR_MSG, "0", response.statusCode(), 0);
 		} else if (response.statusCode() >= 400) {
 			Parser.parseResponse(this.readValue(response.body(), BaseError.class));
 		}
