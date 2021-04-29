@@ -5,40 +5,50 @@ import java.util.Properties;
 
 public class Constants {
 
+	private Constants() {
+	}
+
 	/**
-	 * Related to Crossing Mids API
+	 * Related to Crossing Minds API
 	 */
 	public static final String API_URL = "https://api.crossingminds.com/";
 
-	private Constants() {
-	}
+	/*
+	 * Related to Xminds API
+	 * 
+	 * @parameter xminds.version
+	 */
+	private static String xmindsVersion;
+
+	/*
+	 * Related to Xminds Java client
+	 * 
+	 * @parameter java.version
+	 */
+	private static String clientVersion;
 
 	static {
 		try {
 			Properties prop = new Properties();
 			prop.load(Constants.class.getResourceAsStream("/version.properties"));
-			clientVersion = prop.getProperty("version");
+			xmindsVersion = prop.getProperty("xminds.version");
+			clientVersion = prop.getProperty("java.version");
 		} catch (IOException e) {
-			clientVersion = "";
+			xmindsVersion = clientVersion = "";
 		}
 	}
-
-	/*
-	 * Related to Xminds Java API
-	 * 
-	 * @parameter expression="${project.version}"
-	 */
-	private static String clientVersion;
 
 	/*
 	 * Related to the timeout of the HttpRequest in minutes
 	 */
 	public static final int REQUEST_TIMEOUT = 5;
+
 	/**
 	 * Related to Headers
 	 */
 	public static final String HEADER_USER_AGENT = "User-Agent";
-	public static final String HEADER_USER_AGENT_VALUE = "CrossingMinds/" + clientVersion;
+	public static final String HEADER_USER_AGENT_VALUE = String.format("CrossingMinds/%s (Java/%s; JSON) ",
+			xmindsVersion, clientVersion);
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	public static final String HEADER_CONTENT_TYPE_JSON_VALUE = "application/json";
 	public static final String HEADER_ACCEPT = "Accept";

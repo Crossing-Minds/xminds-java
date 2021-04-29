@@ -13,6 +13,7 @@ import org.junit.platform.commons.annotation.Testable;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
+import com.crossingminds.api.XMindClientImpl.XMindFactory;
 import com.crossingminds.api.exception.XMindException;
 import com.crossingminds.api.model.Database;
 import com.crossingminds.api.model.IndividualAccount;
@@ -86,7 +87,7 @@ class BaseTest {
 			}
 			break;
 		}
-		client = XMindClientImpl.XMindFactory.getClient(httpClientMock, host + "/");
+		client = XMindFactory.getClient(httpClientMock, host + "/", null);
 	}
 
 	void setUpHttpClientMockException(String method, String path, String respMock, String queryParams,
@@ -96,7 +97,7 @@ class BaseTest {
 			httpClientMock.onGet().withPath(path).doReturnJSON(respMock).withStatus(401);
 			break;
 		}
-		client = XMindClientImpl.XMindFactory.getClient(httpClientMock, host + "/");
+		client = XMindFactory.getClient(httpClientMock, host + "/", null);
 	}
 
 	void verifyJSONResponse(String expected, Object received) {

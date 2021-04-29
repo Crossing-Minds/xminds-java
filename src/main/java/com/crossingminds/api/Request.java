@@ -49,14 +49,14 @@ public class Request {
 	/*
 	 * Protected Constructor
 	 */
-	protected Request(HttpClient httpClient, String host) {
+	protected Request(HttpClient httpClient, String host, String userAgent) {
 		this.httpClient = httpClient;
 		this.host = !host.isBlank() ? host : Constants.API_URL;
 		this.mapper = new ObjectMapper();
 		this.token = new Token();
 		this.headers = new String[8];
 		this.headers[0] = Constants.HEADER_USER_AGENT;
-		this.headers[1] = Constants.HEADER_USER_AGENT_VALUE;
+		this.headers[1] = Constants.HEADER_USER_AGENT_VALUE + (userAgent != null ? userAgent : "");
 		this.headers[2] = Constants.HEADER_CONTENT_TYPE;
 		this.headers[3] = Constants.HEADER_CONTENT_TYPE_JSON_VALUE;
 		this.headers[4] = Constants.HEADER_ACCEPT;

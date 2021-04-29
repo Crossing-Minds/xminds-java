@@ -68,12 +68,12 @@ public class XMindClientImpl implements XMindClient {
 	 */
 	private Request request;
 
-	private XMindClientImpl(HttpClient httpClient, String host) {
-		this.request = new Request(httpClient, host);
+	private XMindClientImpl(HttpClient httpClient, String host, String externalUserAgent) {
+		this.request = new Request(httpClient, host, externalUserAgent);
 	}
 
-	private XMindClientImpl(HttpClient httpClient, String host, ServiceAccount serviceAccount) throws XMindException {
-		this.request = new Request(httpClient, host);
+	private XMindClientImpl(HttpClient httpClient, String host, ServiceAccount serviceAccount, String externalUserAgent) throws XMindException {
+		this.request = new Request(httpClient, host, externalUserAgent);
 		this.loginService(serviceAccount);
 	}
 
@@ -116,11 +116,12 @@ public class XMindClientImpl implements XMindClient {
 		/**
 		 *  Default constructor
 		 *  
+		 * @param externalUserAgent - additional data to identify requests. Default: null
 		 * @return XMindClient - client instance
 		 */
-		public static XMindClient getClient() {
+		public static XMindClient getClient(String externalUserAgent) {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
-					new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), "")));
+					new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), "", externalUserAgent)));
 		}
 
 		/**
@@ -129,25 +130,27 @@ public class XMindClientImpl implements XMindClient {
 		 * 
 		 * @param host
 		 * @param serviceAccount
+		 * @param externalUserAgent - additional data to identify requests. Default: null
 		 * @return XMindClient - client instance
 		 * @throws XMindException
 		 */
-		public static XMindClient getClient(ServiceAccount serviceAccount) throws XMindException {
+		public static XMindClient getClient(ServiceAccount serviceAccount, String externalUserAgent) throws XMindException {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
 					new Class<?>[] { XMindClient.class },
-					new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), "", serviceAccount)));
+					new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), "", serviceAccount, externalUserAgent)));
 		}
 
 		/**
 		 * Custom environment constructor
 		 * 
 		 * @param host - the custom host
+		 * @param externalUserAgent - additional data to identify requests. Default: null
 		 * @return XMindClient - client instance
 		 */
-		public static XMindClient getClient(String host) {
+		public static XMindClient getClient(String host, String externalUserAgent) {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
 					new Class<?>[] { XMindClient.class },
-					new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), host)));
+					new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), host, externalUserAgent)));
 		}
 
 		/**
@@ -156,13 +159,14 @@ public class XMindClientImpl implements XMindClient {
 		 * 
 		 * @param host
 		 * @param serviceAccount
+		 * @param externalUserAgent - additional data to identify requests. Default: null
 		 * @return XMindClient - client instance
 		 * @throws XMindException
 		 */
-		public static XMindClient getClient(String host, ServiceAccount serviceAccount) throws XMindException {
+		public static XMindClient getClient(String host, ServiceAccount serviceAccount, String externalUserAgent) throws XMindException {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
 					new Class<?>[] { XMindClient.class },
-					new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), host, serviceAccount)));
+					new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), host, serviceAccount, externalUserAgent)));
 		}
 
 		/**
@@ -170,11 +174,12 @@ public class XMindClientImpl implements XMindClient {
 		 * 
 		 * @param httpClient
 		 * @param host
+		 * @param externalUserAgent - additional data to identify requests. Default: null
 		 * @return XMindClient - client instance
 		 */
-		public static XMindClient getClient(HttpClient httpClient, String host) {
+		public static XMindClient getClient(HttpClient httpClient, String host, String externalUserAgent) {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
-				new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(httpClient, host)));
+				new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(httpClient, host, externalUserAgent)));
 		}
 	}
 
