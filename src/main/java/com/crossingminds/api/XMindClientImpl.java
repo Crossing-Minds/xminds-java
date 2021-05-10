@@ -364,7 +364,7 @@ public class XMindClientImpl implements XMindClient {
 		this.request.patch(uri, bodyParams, Base.class);
 	}
 
-	@Override
+	@LoginRequired
 	public void partialUpdateUsersBulk(List<User> users, Integer chunkSize, Boolean waitForCompletion,
 			boolean createIfMissing) throws XMindException {
 		if(chunkSize == null)
@@ -460,7 +460,7 @@ public class XMindClientImpl implements XMindClient {
 		this.request.patch(uri, bodyParams, Base.class);
 	}
 
-	@Override
+	@LoginRequired
 	public void partialUpdateItemsBulk(List<Item> items, Integer chunkSize, Boolean waitForCompletion,
 			boolean createIfMissing) throws XMindException {
 		if(chunkSize == null)
