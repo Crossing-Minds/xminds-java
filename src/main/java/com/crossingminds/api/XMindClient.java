@@ -241,7 +241,7 @@ public interface XMindClient extends Serializable {
 	 * @param User
 	 * @throws XMindException
 	 */
-	void createOrUpdateUser(User user)  throws XMindException;
+	void createOrUpdateUser(User user) throws XMindException;
 
 	/**
 	 * Create many users in bulk, or update the ones for which the user_id already exist.
@@ -271,6 +271,34 @@ public interface XMindClient extends Serializable {
 	 * @throws XMindException
 	 */
 	List<User> listUsers(List<Object> usersId) throws XMindException;
+
+	/**
+	 * Partially update some properties of an user. 
+	 * The properties that are not listed in the request body will be left unchanged. 
+	 * The list of values given for repeated properties will replace (not append) the previous list of values.
+	 *
+	 * @param user - The user properties to update
+	 * @param createIfMissing - to control whether an error should be returned or a new user should be 
+	 * 					created when the user_id does not already exist
+	 * @throws XMindException
+	 */
+	void partialUpdateUser(User user, boolean createIfMissing) throws XMindException;
+
+	/**
+	 * Partially update some properties of many users. 
+	 * The properties that are not listed in the request body will be left unchanged. 
+	 * The list of values given for repeated properties will replace (not append) the previous list of values.
+	 *
+	 * @param users - the users to be created/updated
+	 * @param chunkSize - to split the requests in chunks of this size (default: 1K)
+	 * @param waitForCompletion - Set to true to wait for completion and respond with 200 OK. 
+	 * 							Set to false to respond immediately with 202 Accepted. 
+	 * 							To use the default value set to null
+	 * @param createIfMissing - to control whether an error should be returned or a new users should be 
+	 * 					created when the user_id does not already exist
+	 * @throws XMindException
+	 */
+	void partialUpdateUsersBulk(List<User> users, Integer chunkSize, Boolean waitForCompletion, boolean createIfMissing) throws XMindException;
 
 	/**
 	 * Retrieve all item-properties for the current database.
@@ -318,7 +346,7 @@ public interface XMindClient extends Serializable {
 	 * @param Item
 	 * @throws XMindException
 	 */
-	void createOrUpdateItem(Item item)  throws XMindException;
+	void createOrUpdateItem(Item item) throws XMindException;
 
 	/**
 	 * Create many items in bulk, or update the ones for which the item_id already exist.
@@ -348,6 +376,34 @@ public interface XMindClient extends Serializable {
 	 * @throws XMindException
 	 */
 	List<Item> listItems(List<Object> itemsId) throws XMindException;
+
+	/**
+	 * Partially update some properties of an item. 
+	 * The properties that are not listed in the request body will be left unchanged. 
+	 * The list of values given for repeated properties will replace (not append) the previous list of values.
+	 *
+	 * @param item - The item properties to update
+	 * @param createIfMissing - to control whether an error should be returned or a new item should be 
+	 * 					created when the item_id does not already exist
+	 * @throws XMindException
+	 */
+	void partialUpdateItem(Item item, boolean createIfMissing) throws XMindException;
+
+	/**
+	 * Partially update some properties of many items. 
+	 * The properties that are not listed in the request body will be left unchanged. 
+	 * The list of values given for repeated properties will replace (not append) the previous list of values.
+	 *
+	 * @param items - the items to create/update
+	 * @param chunkSize - default=1000
+	 * @param waitForCompletion - Set to true to wait for completion and respond with 200 OK. 
+	 * 							Set to false to respond immediately with 202 Accepted. 
+	 * 							To use the default value set to null
+	 * @param createIfMissing - to control whether an error should be returned or a new items should be 
+	 * 					created when the item_id does not already exist
+	 * @throws XMindException
+	 */
+	void partialUpdateItemsBulk(List<Item> items, Integer chunkSize, Boolean waitForCompletion, boolean createIfMissing) throws XMindException;
 
 	/**
 	 * Create or update a rating for a user and an item. If the rating exists for the tuple 

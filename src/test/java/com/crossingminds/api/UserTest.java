@@ -192,9 +192,34 @@ class UserTest extends BaseTest {
 		httpClientMock.verify().get(path+"?cursor=Q21vU1pHb1FjSEp...&amt=10").called();
 	}
 
+	@Test
+	final void testPartialUpdateUser() throws XMindException {
+		// Prepare Test
+		var path = "/" + String.format(Constants.ENDPOINT_PARTIAL_UPDATE_USER, getUser().getUserId());
+		var respMock = "";
+		// call Endpoint
+		setUpHttpClientMock(HttpMethods.PATCH, path, respMock, "", "");
+		client.partialUpdateUser(getUser(), true);
+		// check test
+		httpClientMock.verify().patch(path).called();
+	}
+
+	@Test
+	final void testPartialUpdateUsersBulk() throws XMindException {
+		// Prepare Test
+		var path = "/" + Constants.ENDPOINT_PARTIAL_UPDATE_USERS_BULK;
+		var respMock = "";
+		// call Endpoint
+		setUpHttpClientMock(HttpMethods.PATCH, path, respMock, "", "");
+		client.partialUpdateUsersBulk(getUsersBulk(), null, false, true);
+		// check test
+		httpClientMock.verify().patch(path).called();
+	}
+
 	// Utils
 	Property property = Property.builder().propertyName("age").valueType("int8").repeated(false).build();
-	private User getUser() {
+
+	User getUser() {
 		User user = new User();
 		user.setUserId("123e4567-e89b-12d3-a456-426614174000");
 		user.put("age", 25);
@@ -202,7 +227,7 @@ class UserTest extends BaseTest {
 		return user;
 	}
 
-	private List<User> getUsersBulk() {
+	List<User> getUsersBulk() {
 		List<User> users = new ArrayList<>();
 		User userA = new User();
 		userA.setUserId("123e4567-e89b-12d3-a456-426614174000");
@@ -217,7 +242,7 @@ class UserTest extends BaseTest {
 		return users;
 	}
 
-	private List<Object> getUsersId() {
+	List<Object> getUsersId() {
 		List<Object> usersId = new ArrayList<>();
 		usersId.add("123e4567-e89b-12d3-a456-426614174000");
 		usersId.add("223e4567-e89b-12d3-a456-426614174001");

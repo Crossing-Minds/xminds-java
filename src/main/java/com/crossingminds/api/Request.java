@@ -109,6 +109,12 @@ public class Request {
 		return sendHttpRequest(getHttpRequestBuilder(getURI(endpoint)).DELETE().build(), valueType);
 	}
 
+	public <T> T patch(String endpoint, Object objRequestBody, Class<T> valueType) throws XMindException {
+		return sendHttpRequest(getHttpRequestBuilder(getURI(endpoint))
+				.method("PATCH", BodyPublishers.ofString(this.writeValueAsString(objRequestBody))).build(),
+				valueType);
+	}
+
 	private <T> T sendHttpRequest(HttpRequest request, Class<T> valueType) throws XMindException {
 		try {
 			var response = this.httpClient.send(request, BodyHandlers.ofString());

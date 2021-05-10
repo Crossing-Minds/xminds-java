@@ -86,6 +86,16 @@ class BaseTest {
 				httpClientMock.onDelete().withPath(path).doReturnJSON(respMock);
 			}
 			break;
+		case HttpMethods.PATCH:
+			if (!queryParams.isBlank()) {
+				String[] params = queryParams.split(":");
+				httpClientMock.onPatch().withPath(path).withParameter(params[0], params[1]).doReturnJSON(respMock);
+			} else if (!bodyParam.isBlank()) {
+				httpClientMock.onPatch().withPath(path).withBody(containsString(bodyParam)).doReturnJSON(respMock);
+			} else {
+				httpClientMock.onPatch().withPath(path).doReturnJSON(respMock);
+			}
+			break;
 		}
 		client = XMindFactory.getClient(httpClientMock, host + "/", null);
 	}

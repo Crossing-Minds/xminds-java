@@ -202,8 +202,33 @@ class ItemTest extends BaseTest {
 		httpClientMock.verify().get(path+"?cursor=Q21vU1pHb1FjSEp...&amt=10").called();
 	}
 
+	@Test
+	final void testPartialUpdateItem() throws XMindException {
+		// Prepare Test
+		var path = "/" + String.format(Constants.ENDPOINT_PARTIAL_UPDATE_ITEM, getItem().getItemId());
+		var respMock = "";
+		// call Endpoint
+		setUpHttpClientMock(HttpMethods.PATCH, path, respMock, "", "");
+		client.partialUpdateItem(getItem(), true);
+		// check test
+		httpClientMock.verify().patch(path).called();
+	}
+
+	@Test
+	final void testPartialUpdateItemsBulk() throws XMindException {
+		// Prepare Test
+		var path = "/" + Constants.ENDPOINT_PARTIAL_UPDATE_ITEMS_BULK;
+		var respMock = "";
+		// call Endpoint
+		setUpHttpClientMock(HttpMethods.PATCH, path, respMock, "", "");
+		client.partialUpdateItemsBulk(getItemsBulk(), 1000, false, true);
+		// check test
+		httpClientMock.verify().patch(path).called();
+	}
+
 	// Utils
 	Property property = Property.builder().propertyName("price").valueType("float32").repeated(false).build();
+
 	Item getItem() {
 		Item item = new Item();
 		item.setItemId("123e4567-e89b-12d3-a456-426614174000");

@@ -355,6 +355,32 @@ public class XMindClientImpl implements XMindClient {
 	}
 
 	@LoginRequired
+	public void partialUpdateUser(User user, boolean createIfMissing) throws XMindException {
+		var uri = String.format(Constants.ENDPOINT_PARTIAL_UPDATE_USER, user.getUserId());
+		user.remove("user_id");
+		Map<String, Object> bodyParams = new HashMap<>();
+		bodyParams.put("user", user);
+		bodyParams.put("create_if_missing", createIfMissing);
+		this.request.patch(uri, bodyParams, Base.class);
+	}
+
+	@Override
+	public void partialUpdateUsersBulk(List<User> users, Integer chunkSize, Boolean waitForCompletion,
+			boolean createIfMissing) throws XMindException {
+		if(chunkSize == null)
+			chunkSize = 1000; // default value
+		for (List<User> usersChunk : ListUtils.partition(users, chunkSize)) {
+			Map<String, Object> bodyParams = new HashMap<>();
+			bodyParams.put("users", usersChunk);
+			if(waitForCompletion != null) {
+				bodyParams.put("wait_for_completion", waitForCompletion);
+			}
+			bodyParams.put("create_if_missing", createIfMissing);
+			this.request.patch(Constants.ENDPOINT_PARTIAL_UPDATE_USERS_BULK, bodyParams, Base.class);
+		}
+	}
+
+	@LoginRequired
 	public PropertyList listAllItemProperties() throws XMindException {
 		return this.request.get(Constants.ENDPOINT_LIST_ALL_ITEM_PROPERTIES, PropertyList.class);
 	}
@@ -422,6 +448,32 @@ public class XMindClientImpl implements XMindClient {
 		bodyParams.put("items_id", itemsId);
 		var uri = Constants.ENDPOINT_LIST_ITEMS_BY_ID;
 		return this.request.post(uri, bodyParams, ItemList.class).getItems();
+	}
+
+	@LoginRequired
+	public void partialUpdateItem(Item item, boolean createIfMissing) throws XMindException {
+		var uri = String.format(Constants.ENDPOINT_PARTIAL_UPDATE_ITEM, item.getItemId());
+		item.remove("item_id");
+		Map<String, Object> bodyParams = new HashMap<>();
+		bodyParams.put("item", item);
+		bodyParams.put("create_if_missing", createIfMissing);
+		this.request.patch(uri, bodyParams, Base.class);
+	}
+
+	@Override
+	public void partialUpdateItemsBulk(List<Item> items, Integer chunkSize, Boolean waitForCompletion,
+			boolean createIfMissing) throws XMindException {
+		if(chunkSize == null)
+			chunkSize = 1000; // default value
+		for (List<Item> itemsChunk : ListUtils.partition(items, chunkSize)) {
+			Map<String, Object> bodyParams = new HashMap<>();
+			bodyParams.put("items", itemsChunk);
+			if(waitForCompletion != null) {
+				bodyParams.put("wait_for_completion", waitForCompletion);
+			}
+			bodyParams.put("create_if_missing", createIfMissing);
+			this.request.patch(Constants.ENDPOINT_PARTIAL_UPDATE_ITEMS_BULK, bodyParams, Base.class);
+		}
 	}
 
 	@LoginRequired

@@ -89,6 +89,8 @@ public class Constants {
 	public static final String ENDPOINT_CREATE_UPDATE_USERS_BULK = "users-bulk/";
 	public static final String ENDPOINT_LIST_USERS_PAGINATED = "users-bulk/";
 	public static final String ENDPOINT_LIST_USERS_BY_IDS = "users-bulk/list/";
+	public static final String ENDPOINT_PARTIAL_UPDATE_USER = "users/%s/";
+	public static final String ENDPOINT_PARTIAL_UPDATE_USERS_BULK = "users-bulk/";
 	// Items
 	public static final String ENDPOINT_LIST_ALL_ITEM_PROPERTIES = "items-properties/";
 	public static final String ENDPOINT_CREATE_ITEM_PROPERTY = "items-properties/";
@@ -99,6 +101,8 @@ public class Constants {
 	public static final String ENDPOINT_CREATE_UPDATE_ITEMS_BULK = "items-bulk/";
 	public static final String ENDPOINT_LIST_ITEMS_PAGINATED = "items-bulk/";
 	public static final String ENDPOINT_LIST_ITEMS_BY_ID = "items-bulk/list/";
+	public static final String ENDPOINT_PARTIAL_UPDATE_ITEM = "items/%s/";
+	public static final String ENDPOINT_PARTIAL_UPDATE_ITEMS_BULK = "items-bulk/";
 	// Rating
 	public static final String ENDPOINT_CREATE_UPDATE_RATING = "users/%s/ratings/%s/";
 	public static final String ENDPOINT_DELETE_RATING = "users/%s/ratings/%s/";
