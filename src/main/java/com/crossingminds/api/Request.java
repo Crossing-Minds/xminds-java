@@ -50,7 +50,7 @@ public class Request {
 	 * Protected Constructor
 	 */
 	protected Request(HttpClient httpClient, String host, String userAgent) {
-		this.httpClient = httpClient;
+		this.httpClient = httpClient != null ? httpClient : HttpClient.newHttpClient();
 		this.host = !host.isBlank() ? host : Constants.API_URL;
 		this.mapper = new ObjectMapper();
 		this.token = new Token();
@@ -119,6 +119,8 @@ public class Request {
 		try {
 			var response = this.httpClient.send(request, BodyHandlers.ofString());
 			return checkStatusCode(response, valueType);
+		} catch (XMindException e) {
+			throw e;
 		} catch (IOException e) {
 			throw new ServerException(e, Constants.UNKNOWN_ERROR_MSG, "0", 500, 0);
 		} catch (InterruptedException e) {

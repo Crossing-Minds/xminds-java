@@ -16,9 +16,11 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({ "jwtToken", "refresh_token", "database" })
+@JsonPropertyOrder({ "org_id", "jwtToken", "refresh_token", "database" })
 public class Token extends Base {
 
+	@JsonProperty("org_id")
+	private String orgId;
 	@JsonProperty("token")
 	private String jwtToken;
 	@JsonProperty("refresh_token")

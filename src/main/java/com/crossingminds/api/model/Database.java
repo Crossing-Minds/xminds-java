@@ -16,13 +16,11 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonPropertyOrder({ "id", "organization_id", "name", "description", "item_id_type", "user_id_type", "counters", "status" })
+@JsonPropertyOrder({ "id", "name", "description", "item_id_type", "user_id_type", "counters", "status" })
 public class Database extends Base {
 
 	@JsonProperty("id")
 	private String id;
-	@JsonProperty("organization_id")
-	private String organizationId;
 	@JsonProperty("name")
 	private String name;
 	@JsonProperty("description")

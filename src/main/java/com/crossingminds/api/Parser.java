@@ -36,7 +36,7 @@ public class Parser {
 			Errors errorDetails = Errors.valueOf(errorName.toUpperCase());
 			var error = baseError.getErrorData().get("error") != null ? (String) baseError.getErrorData().get("error") : "";
 			var type = baseError.getErrorData().get("type") != null ? (String) baseError.getErrorData().get("type") : "";
-			var key = baseError.getErrorData().get("key") != null ? (String) baseError.getErrorData().get("key") : "";
+			var key = baseError.getErrorData().get("key") != null ? (Object) baseError.getErrorData().get("key") : "";
 			var method = baseError.getErrorData().get("method") != null ? (String) baseError.getErrorData().get("method") : "";
 			switch (errorName) {
 			case "ServerUnavailable":
@@ -61,13 +61,13 @@ public class Parser {
 				throw new WrongDataException(errorDetails.getMsg(), errorDetails.getCode(),
 						errorDetails.getHttpStatus(), 0);
 			case "DuplicatedError":
-				throw new DuplicatedException(errorDetails.getMsg().replace("{type}", type).replace("{key}", key),
+				throw new DuplicatedException(errorDetails.getMsg().replace("{type}", type).replace("{key}", key.toString()),
 						errorDetails.getCode(), errorDetails.getHttpStatus(), 0);
 			case "ForbiddenError":
 				throw new ForbiddenException(errorDetails.getMsg().replace("{error}", error), errorDetails.getCode(),
 						errorDetails.getHttpStatus(), 0);
 			case "NotFoundError":
-				throw new NotFoundException(errorDetails.getMsg().replace("{type}", type).replace("{key}", key),
+				throw new NotFoundException(errorDetails.getMsg().replace("{type}", type).replace("{key}", key.toString()),
 						errorDetails.getCode(), errorDetails.getHttpStatus(), 0);
 			case "MethodNotAllowed":
 				throw new MethodNotAllowedException(errorDetails.getMsg().replace("{method}", method),

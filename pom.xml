@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.crossingminds</groupId>
 	<artifactId>xminds</artifactId>
-	<version>1.1.1</version>
+	<version>1.1.3</version>
 	<name>xminds</name>
 	<url>https://github.com/Crossing-Minds/xminds-java</url>
 	<description>Java client for Crossing Minds B2B API</description>

@@ -66,13 +66,21 @@ public class XMindClientImpl implements XMindClient {
 	/*
 	 * Not accessible to final client
 	 */
-	private Request request;
+	protected Request request;
 
-	private XMindClientImpl(HttpClient httpClient, String host, String externalUserAgent) {
+	protected XMindClientImpl(ServiceAccount serviceAccount, String externalUserAgent) {
+		this.request = new Request(null, "", externalUserAgent);
+	}
+
+	protected XMindClientImpl(String host, ServiceAccount serviceAccount, String externalUserAgent) throws XMindException {
+		this(null, host, serviceAccount, externalUserAgent);
+	}
+
+	protected XMindClientImpl(HttpClient httpClient, String host, String externalUserAgent) {
 		this.request = new Request(httpClient, host, externalUserAgent);
 	}
 
-	private XMindClientImpl(HttpClient httpClient, String host, ServiceAccount serviceAccount, String externalUserAgent) throws XMindException {
+	protected XMindClientImpl(HttpClient httpClient, String host, ServiceAccount serviceAccount, String externalUserAgent) throws XMindException {
 		this.request = new Request(httpClient, host, externalUserAgent);
 		this.loginService(serviceAccount);
 	}
@@ -103,7 +111,7 @@ public class XMindClientImpl implements XMindClient {
 				return method.invoke(xmindClient, args);
 			} catch (InvocationTargetException e) {
 				try {
-					throw e.getTargetException().getCause();
+					throw e.getTargetException();
 				} catch (JwtTokenExpiredException ex) {
 					if (!this.hasLoginRequired(method))
 						throw ex;
@@ -121,7 +129,7 @@ public class XMindClientImpl implements XMindClient {
 		 */
 		public static XMindClient getClient(String externalUserAgent) {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
-					new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), "", externalUserAgent)));
+					new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(null, "", externalUserAgent)));
 		}
 
 		/**
@@ -137,7 +145,7 @@ public class XMindClientImpl implements XMindClient {
 		public static XMindClient getClient(ServiceAccount serviceAccount, String externalUserAgent) throws XMindException {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
 					new Class<?>[] { XMindClient.class },
-					new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), "", serviceAccount, externalUserAgent)));
+					new XMindFactory(new XMindClientImpl(null, "", serviceAccount, externalUserAgent)));
 		}
 
 		/**
@@ -150,7 +158,7 @@ public class XMindClientImpl implements XMindClient {
 		public static XMindClient getClient(String host, String externalUserAgent) {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
 					new Class<?>[] { XMindClient.class },
-					new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), host, externalUserAgent)));
+					new XMindFactory(new XMindClientImpl(null, host, externalUserAgent)));
 		}
 
 		/**
@@ -166,7 +174,7 @@ public class XMindClientImpl implements XMindClient {
 		public static XMindClient getClient(String host, ServiceAccount serviceAccount, String externalUserAgent) throws XMindException {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
 					new Class<?>[] { XMindClient.class },
-					new XMindFactory(new XMindClientImpl(HttpClient.newHttpClient(), host, serviceAccount, externalUserAgent)));
+					new XMindFactory(new XMindClientImpl(null, host, serviceAccount, externalUserAgent)));
 		}
 
 		/**
