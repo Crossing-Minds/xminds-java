@@ -136,3 +136,61 @@ public Object invoke(Object proxy, Method method, Object[] args) throws Throwabl
 
 ```
 All methods annotated with @LoginRequired are intercepted and then invoked through this flow to ensure authentication using the refresh token.
+
+#### Creating instances
+
+```java
+// Building a default client
+XMindClient client = new XmindBuilder().build();
+client.loginService(aServiceAccount);
+
+// It is possible to provide some optional parameters
+XMindClient client = new XmindBuilder()
+	.withHost("https://staging-api.crossingminds.com/") // Example for staging host
+	.withServiceAccount(aServiceAccount) // Will do the login service implicitly
+	.withUserAgent("USER_AGENT") // Used to keep track of requests (example: "Shopify/MyOwnStoreName")
+	.withHttpClient(mockHttpClient) // For testing purposes only 
+	.build();
+```
+
+#### Create a Custom client (extending XmindClient)
+```java
+// Example of a CustomXmindsClient interface
+public interface CustomXmindsClient extends XMindClient {
+
+	MyObject myCustomMethod(String id) throws XMindException;
+
+}
+
+// Example of a CustomXmindsClient implementation
+public class CustomXmindsClientImpl extends XMindClientImpl implements CustomXmindsClient {
+
+	private final String ENDPOINT_RESOURCES = "resource/%s/";
+
+	public CustomXmindsClientImpl(HttpClient httpClient, String host, ServiceAccount serviceAccount, String externalUserAgent) throws XMindException {
+		super(httpClient, host, serviceAccount, externalUserAgent);
+	}
+
+	@LoginRequired
+	public MyObject myCustomMethod(String id) throws XMindException {
+		var uri = String.format(ENDPOINT_RESOURCES, id);
+		return super.request.get(uri, MyObject.class);
+	}
+
+}
+
+// Building instances
+var builder = new XmindBuilder();
+
+// Example of how to create a default instance of the custom client
+XMindClient client = (CustomXmindsClient) builder.build(CustomXmindsClient.class, CustomXmindsClientImpl.class);
+
+// Example of creating an instance with custom client parameters (optional)
+XMindClient client = (CustomXmindsClient) builder
+	.withHost("https://staging-api.crossingminds.com/") // Example for staging host
+	.withServiceAccount(aServiceAccount) // Will do the login service implicitly
+	.withUserAgent("USER_AGENT") // Used to keep track of requests (example: "Shopify/MyOwnStoreName")
+	.withHttpClient(mockHttpClient) // For testing purposes only 
+	.build(CustomXmindsClient.class, CustomXmindsClientImpl.class);
+
+```

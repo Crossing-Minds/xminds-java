@@ -18,6 +18,8 @@ import com.crossingminds.api.utils.Constants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 
  * This class implements the low level request logic of Crossing Minds API
@@ -26,52 +28,72 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Request {
 
 	/*
+	 * JSON ObjectMapper
+	 */
+	private static final ObjectMapper MAPPER = new ObjectMapper();
+	/*
 	 * Array of Headers to use in all requests
 	 */
-	private String[] headers;
+	private static String[] HEADERS = getHeaders();
+
+	// INSTANCE ATTRIBUTES
 	/*
 	 * Contains data related to security
 	 */
-	private Token token;
+	private Token token = new Token();
 	/*
 	 * Contains the host of the API
 	 */
 	private String host = "";
 	/*
-	 * JSON ObjectMapper
+	 * Contains the external user agent
 	 */
-	private ObjectMapper mapper;
+	private String userAgent = "";
 	/*
 	 * HttpClient
 	 */
-	private HttpClient httpClient;
+	private HttpClient httpClient = null;
 
-	/*
-	 * Protected Constructor
+	/**
+	 * Default constructor
+	 */
+	protected Request() {
+		this(HttpClient.newHttpClient(), Constants.API_URL, "");
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param httpClient
+	 * @param host
+	 * @param userAgent
 	 */
 	protected Request(HttpClient httpClient, String host, String userAgent) {
 		this.httpClient = httpClient != null ? httpClient : HttpClient.newHttpClient();
-		this.host = !host.isBlank() ? host : Constants.API_URL;
-		this.mapper = new ObjectMapper();
-		this.token = new Token();
-		this.headers = new String[8];
-		this.headers[0] = Constants.HEADER_USER_AGENT;
-		this.headers[1] = Constants.HEADER_USER_AGENT_VALUE + (userAgent != null ? userAgent : "");
-		this.headers[2] = Constants.HEADER_CONTENT_TYPE;
-		this.headers[3] = Constants.HEADER_CONTENT_TYPE_JSON_VALUE;
-		this.headers[4] = Constants.HEADER_ACCEPT;
-		this.headers[5] = Constants.HEADER_ACCEPT_JSON_VALUE;
-		this.headers[6] = Constants.HEADER_AUTHORIZATION;
-		this.headers[7] = Constants.HEADER_AUTHORIZATION_VALUE;
+		this.host = StringUtils.isNotBlank(host) ? host : Constants.API_URL;
+		this.userAgent = StringUtils.isNotBlank(userAgent) ? userAgent : "";
+		updateUserAgentHeader();
 	}
 
+	private static String[] getHeaders() {
+		var headers = new String[8];
+		headers[0] = Constants.HEADER_USER_AGENT;
+		headers[1] = Constants.HEADER_USER_AGENT_VALUE;
+		headers[2] = Constants.HEADER_CONTENT_TYPE;
+		headers[3] = Constants.HEADER_CONTENT_TYPE_JSON_VALUE;
+		headers[4] = Constants.HEADER_ACCEPT;
+		headers[5] = Constants.HEADER_ACCEPT_JSON_VALUE;
+		headers[6] = Constants.HEADER_AUTHORIZATION;
+		headers[7] = Constants.HEADER_AUTHORIZATION_VALUE;
+		return headers;
+	}
 	private <T> T readValue(String content, Class<T> valueType) throws JsonProcessingException {
-		return this.mapper.readValue(content.isBlank() ? "{}" : content, valueType);
+		return MAPPER.readValue(content.isBlank() ? "{}" : content, valueType);
 	}
 
 	private String writeValueAsString(Object obj) {
 		try {
-			return this.mapper.writeValueAsString(obj);
+			return MAPPER.writeValueAsString(obj);
 		} catch (JsonProcessingException e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -132,7 +154,7 @@ public class Request {
 	private Builder getHttpRequestBuilder(URI uri) {
 		return HttpRequest.newBuilder(uri)
 			.timeout(Duration.ofSeconds(Constants.REQUEST_TIMEOUT))
-			.headers(this.headers);
+			.headers(HEADERS);
 	}
 
 	private URI getURI(String endpoint) {
@@ -179,7 +201,10 @@ public class Request {
 	}
 
 	private void updateTokenHeader() {
-		this.headers[7] = Constants.HEADER_AUTHORIZATION_VALUE + this.token.getJwtToken();
+		HEADERS[7] = Constants.HEADER_AUTHORIZATION_VALUE + this.token.getJwtToken();
 	}
 
+	private void updateUserAgentHeader() {
+		HEADERS[1] = Constants.HEADER_USER_AGENT_VALUE + this.userAgent;
+	}
 }

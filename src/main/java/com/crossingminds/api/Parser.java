@@ -16,6 +16,8 @@ import com.crossingminds.api.exception.XMindException;
 import com.crossingminds.api.model.BaseError;
 import com.crossingminds.api.model.Errors;
 import com.crossingminds.api.utils.Constants;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Parser {
 
@@ -38,6 +40,15 @@ public class Parser {
 			var type = baseError.getErrorData().get("type") != null ? (String) baseError.getErrorData().get("type") : "";
 			var key = baseError.getErrorData().get("key") != null ? (Object) baseError.getErrorData().get("key") : "";
 			var method = baseError.getErrorData().get("method") != null ? (String) baseError.getErrorData().get("method") : "";
+			String query = "";
+			try {
+				if (baseError.getErrorData().get("query") != null) {
+					query = ": " + new ObjectMapper().writeValueAsString(baseError.getErrorData().get("query"));
+				}
+			} catch (JsonProcessingException e) {
+				// Nothing to do
+				// Pass
+			}
 			switch (errorName) {
 			case "ServerUnavailable":
 				throw new ServerUnavailableException(errorDetails.getMsg(), errorDetails.getCode(),
@@ -58,7 +69,7 @@ public class Parser {
 				throw new RequestException(errorDetails.getMsg(), errorDetails.getCode(), errorDetails.getHttpStatus(),
 						0);
 			case "WrongData":
-				throw new WrongDataException(errorDetails.getMsg(), errorDetails.getCode(),
+				throw new WrongDataException(errorDetails.getMsg() + query, errorDetails.getCode(),
 						errorDetails.getHttpStatus(), 0);
 			case "DuplicatedError":
 				throw new DuplicatedException(errorDetails.getMsg().replace("{type}", type).replace("{key}", key.toString()),

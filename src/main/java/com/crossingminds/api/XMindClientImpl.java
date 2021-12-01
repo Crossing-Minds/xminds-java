@@ -1,5 +1,6 @@
 package com.crossingminds.api;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,6 +14,7 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
+import com.crossingminds.api.exception.InstantiationException;
 import com.crossingminds.api.exception.JwtTokenExpiredException;
 import com.crossingminds.api.exception.XMindException;
 import com.crossingminds.api.model.Base;
@@ -49,6 +51,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * This module implements the requests for all API endpoints. The client handles
  * the logic to automatically get a new JWT token using the refresh token.
+ * 
+ * Note: we have implemented an uncommon pattern using reflection alongside with 
+ * a kind of Builder Pattern to solve a problem we have encountered when extending
+ * the client from from outside.
+ * (it does not fired @LoginRequired logic when we inherit from another project)
+ * 
  *
  */
 public class XMindClientImpl implements XMindClient {
@@ -68,34 +76,51 @@ public class XMindClientImpl implements XMindClient {
 	 */
 	protected Request request;
 
-	protected XMindClientImpl(ServiceAccount serviceAccount, String externalUserAgent) {
-		this.request = new Request(null, "", externalUserAgent);
-	}
-
-	protected XMindClientImpl(String host, ServiceAccount serviceAccount, String externalUserAgent) throws XMindException {
-		this(null, host, serviceAccount, externalUserAgent);
-	}
-
-	protected XMindClientImpl(HttpClient httpClient, String host, String externalUserAgent) {
-		this.request = new Request(httpClient, host, externalUserAgent);
-	}
-
 	protected XMindClientImpl(HttpClient httpClient, String host, ServiceAccount serviceAccount, String externalUserAgent) throws XMindException {
 		this.request = new Request(httpClient, host, externalUserAgent);
-		this.loginService(serviceAccount);
+		if(serviceAccount != null)
+			this.loginService(serviceAccount);
 	}
 
 	/**
 	 * 
-	 * Factory to create XmindClient instances
+	 * XmindBuilder to build XmindClient instances
 	 *
 	 */
-	public static class XMindFactory implements InvocationHandler {
+	public static class XmindBuilder implements InvocationHandler {
 
-		private XMindClientImpl xmindClient;
+		private static XMindClientImpl xmindClient;
+		private String host = "";
+		private String userAgent = "";
+		private HttpClient httpClient;
+		private ServiceAccount serviceAccount;
 
-		public XMindFactory(XMindClientImpl client) {
-			this.xmindClient = client;
+		public XmindBuilder() {
+			super();
+		}
+
+		private XmindBuilder(XMindClientImpl client) {
+			xmindClient = client;
+		}
+
+		public XmindBuilder withHost(String aHost) {
+			this.host = aHost;
+			return this;
+		}
+
+		public XmindBuilder withUserAgent(String anUserAgent) {
+			this.userAgent = anUserAgent;
+			return this;
+		}
+
+		public XmindBuilder withHttpClient(HttpClient aHttpClient) {
+			this.httpClient = aHttpClient;
+			return this;
+		}
+
+		public XmindBuilder withServiceAccount(ServiceAccount aServiceAccount) {
+			this.serviceAccount = aServiceAccount;
+			return this;
 		}
 
 		private boolean hasLoginRequired(Method method) {
@@ -122,73 +147,41 @@ public class XMindClientImpl implements XMindClient {
 		}
 
 		/**
-		 *  Default constructor
-		 *  
-		 * @param externalUserAgent - additional data to identify requests. Default: null
-		 * @return XMindClient - client instance
-		 */
-		public static XMindClient getClient(String externalUserAgent) {
-			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
-					new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(null, "", externalUserAgent)));
-		}
-
-		/**
-		 * Default and login as service constructor
-		 * Returns a new client instance logged as Service given a service account 
+		 * Default builder
 		 * 
-		 * @param host
-		 * @param serviceAccount
-		 * @param externalUserAgent - additional data to identify requests. Default: null
-		 * @return XMindClient - client instance
+		 * @return XMindClient - default client instance
 		 * @throws XMindException
 		 */
-		public static XMindClient getClient(ServiceAccount serviceAccount, String externalUserAgent) throws XMindException {
+		public XMindClient build() throws XMindException {
 			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
-					new Class<?>[] { XMindClient.class },
-					new XMindFactory(new XMindClientImpl(null, "", serviceAccount, externalUserAgent)));
+				new Class<?>[] { XMindClient.class }, new XmindBuilder(
+					new XMindClientImpl(this.httpClient, this.host, this.serviceAccount, this.userAgent)));
 		}
 
 		/**
-		 * Custom environment constructor
+		 * Custom builder
 		 * 
-		 * @param host - the custom host
-		 * @param externalUserAgent - additional data to identify requests. Default: null
-		 * @return XMindClient - client instance
+		 * @param customInterface
+		 * @param customImplementation
+		 * @return XMindClient - custom client instance
+		 * @throws InstantiationException
 		 */
-		public static XMindClient getClient(String host, String externalUserAgent) {
-			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
-					new Class<?>[] { XMindClient.class },
-					new XMindFactory(new XMindClientImpl(null, host, externalUserAgent)));
+		public XMindClient build(Class<?> customInterface, Class<?> customImplementation) throws InstantiationException {
+			XMindClientImpl client;
+			try {
+				// Get a Constructor object reflecting the public constructor with the expected signature. Given an implementation
+				Constructor<?> constructor = customImplementation.getConstructor(HttpClient.class, String.class, ServiceAccount.class, String.class);
+				// Create a new instance of the customImplementation using the constructor obtained previously
+				client = (XMindClientImpl) constructor.newInstance(this.httpClient, this.host, this.serviceAccount, this.userAgent);
+				// Get an instance of the proxy class for the custom interface provided
+				return (XMindClient) Proxy.newProxyInstance(customInterface.getClassLoader(), new Class<?>[] { customInterface }, new XmindBuilder(client));
+			} catch (IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException 
+					| SecurityException | java.lang.InstantiationException e) {
+				throw new InstantiationException(e, "An error occurred while creating the instance.");
+			}
 		}
 
-		/**
-		 * Custom environment and login as service constructor
-		 * Returns a new client instance logged as Service given a service account 
-		 * 
-		 * @param host
-		 * @param serviceAccount
-		 * @param externalUserAgent - additional data to identify requests. Default: null
-		 * @return XMindClient - client instance
-		 * @throws XMindException
-		 */
-		public static XMindClient getClient(String host, ServiceAccount serviceAccount, String externalUserAgent) throws XMindException {
-			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
-					new Class<?>[] { XMindClient.class },
-					new XMindFactory(new XMindClientImpl(null, host, serviceAccount, externalUserAgent)));
-		}
-
-		/**
-		 * Mocking constructor given a HttpClient mock
-		 * 
-		 * @param httpClient
-		 * @param host
-		 * @param externalUserAgent - additional data to identify requests. Default: null
-		 * @return XMindClient - client instance
-		 */
-		public static XMindClient getClient(HttpClient httpClient, String host, String externalUserAgent) {
-			return (XMindClient) Proxy.newProxyInstance(XMindClient.class.getClassLoader(),
-				new Class<?>[] { XMindClient.class }, new XMindFactory(new XMindClientImpl(httpClient, host, externalUserAgent)));
-		}
 	}
 
 	@LoginRequired

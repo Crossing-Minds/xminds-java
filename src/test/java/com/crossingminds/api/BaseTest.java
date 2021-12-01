@@ -13,7 +13,7 @@ import org.junit.platform.commons.annotation.Testable;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import com.crossingminds.api.XMindClientImpl.XMindFactory;
+import com.crossingminds.api.XMindClientImpl.XmindBuilder;
 import com.crossingminds.api.exception.XMindException;
 import com.crossingminds.api.model.Database;
 import com.crossingminds.api.model.IndividualAccount;
@@ -44,7 +44,7 @@ class BaseTest {
 			.description("Example Test DB longer description").userIdType("uint32").itemIdType("uuid").build();
 
 	// Package methods
-	void setUpHttpClientMock(String method, String path, String respMock, String queryParams, String bodyParam) {
+	void setUpHttpClientMock(String method, String path, String respMock, String queryParams, String bodyParam) throws XMindException {
 		switch (method) {
 		case HttpMethods.GET:
 			if (!queryParams.isBlank()) {
@@ -97,17 +97,17 @@ class BaseTest {
 			}
 			break;
 		}
-		client = XMindFactory.getClient(httpClientMock, host + "/", null);
+		client = new XmindBuilder().withHost(this.host + "/").withHttpClient(this.httpClientMock).build();
 	}
 
 	void setUpHttpClientMockException(String method, String path, String respMock, String queryParams,
-			String bodyParam) {
+			String bodyParam) throws XMindException {
 		switch (method) {
 		case HttpMethods.GET:
 			httpClientMock.onGet().withPath(path).doReturnJSON(respMock).withStatus(401);
 			break;
 		}
-		client = XMindFactory.getClient(httpClientMock, host + "/", null);
+		client = new XmindBuilder().withHost(this.host + "/").withHttpClient(this.httpClientMock).build();
 	}
 
 	void verifyJSONResponse(String expected, Object received) {
